@@ -4,15 +4,19 @@
 end
 
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
+# TODO: Add some documentation
+
+## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
+# SIM GLOBALS
+SIM_STATE = Dict()
+MAX_STEPS = 100_000
+
+## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
 SDL_init() do
     winsize!(900, 900)
     wintitle!(basename(@__FILE__))
     framerate!(60)
 end
-
-## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
-SIM_STATE = Dict()
-MAX_STEPS = 100_000
 
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
 onevent!() do evt
@@ -31,10 +35,12 @@ SDL_draw() do
     drawcolor!(0,0,0)
     background!()
 
-    # up step
+    # up step (temperature)
     _, wheel_d = mousewheel!()
     nsteps = get!(SIM_STATE, "NUM_STEPS", 300)
-    nsteps = clamp(nsteps + ceil(Int, wheel_d * 0.1 * nsteps), 1, MAX_STEPS)
+    _increment = max(abs(wheel_d) * nsteps, 1)
+    _increment = sign(wheel_d) * ceil(Int, 0.1 * _increment)
+    nsteps = clamp(nsteps + _increment, 0, MAX_STEPS)
     SIM_STATE["NUM_STEPS"] = nsteps
     
     # walk
@@ -59,7 +65,9 @@ SDL_draw() do
 
     # paint
     drawcolor!(255, 255, 255)
-    drawpoints(points_buff, nsteps)
+    if nsteps > 0; drawpoints(points_buff, nsteps)
+        else; drawpoint(x, y) 
+    end
 
     # print some info
     c = loopcount()
