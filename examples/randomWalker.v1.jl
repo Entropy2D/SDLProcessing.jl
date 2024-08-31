@@ -10,6 +10,7 @@ end
 # SIM GLOBALS
 SIM_STATE = Dict()
 MAX_STEPS = 100_000
+INIT_STEPS = 300
 
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
 SDL_init() do
@@ -24,7 +25,7 @@ onevent!() do evt
     if evt.type == SDL_MOUSEBUTTONDOWN
         w, h = winsize()
         SIM_STATE["POS"] = mousepos()
-        SIM_STATE["NUM_STEPS"] = 300
+        SIM_STATE["NUM_STEPS"] = INIT_STEPS
     end
 end
 
@@ -37,7 +38,7 @@ SDL_draw() do
 
     # up step (temperature)
     _, wheel_d = mousewheel!()
-    nsteps = get!(SIM_STATE, "NUM_STEPS", 300)
+    nsteps = get!(SIM_STATE, "NUM_STEPS", INIT_STEPS)
     _increment = max(abs(wheel_d) * nsteps, 1)
     _increment = sign(wheel_d) * ceil(Int, 0.1 * _increment)
     nsteps = clamp(nsteps + _increment, 0, MAX_STEPS)
