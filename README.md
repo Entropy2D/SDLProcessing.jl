@@ -12,8 +12,8 @@ Our goal is to create a tool similar to [Processing](https://processing.org) but
 
 ### randomWalker
 
-A particle randomly walking... click the screen for reseting the simulation.
-The particle traces the path traveled during inter frame time.
+A particle randomly walking... click the screen for reseting/relocating the particle and use the mouse wheel to change the "temperature".
+The particle traces the path traveled during inter the frames time.
 Close the window to end.
 
 To test it run this:
