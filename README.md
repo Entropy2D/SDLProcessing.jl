@@ -1,6 +1,6 @@
 # SDLProcessing
 
-[![CI](https://github.com/Entropy2D/SDLProcessing.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/Entropy2D/SDLProcessing.jl/actions/workflows/CI.yml)
+<!-- [![CI](https://github.com/Entropy2D/SDLProcessing.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/Entropy2D/SDLProcessing.jl/actions/workflows/CI.yml) -->
 <!-- TODO: Make CODECOV work -->
 <!-- [![Coverage](https://codecov.io/gh/Entropy2D/SDLProcessing.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/Entropy2D/SDLProcessing.jl) -->
 
