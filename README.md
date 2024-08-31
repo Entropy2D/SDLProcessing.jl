@@ -4,7 +4,7 @@
 <!-- TODO: Make CODECOV work -->
 <!-- [![Coverage](https://codecov.io/gh/Entropy2D/SDLProcessing.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/Entropy2D/SDLProcessing.jl) -->
 
-Our goal is to create a tool similar to [Processing](https://processing.org) but in Julia. But we do not intent to replicate exactly its API.
+Our goal is to create a tool similar to [Processing](https://processing.org) but in Julia. Although we do not intent to replicate exactly its API.
 
 > DISCLAIMER: We are not part of the [Processing](https://processing.org) project.
 
