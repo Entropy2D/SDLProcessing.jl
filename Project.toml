@@ -3,6 +3,10 @@ uuid = "6bc30f1b-9d27-4cda-84d4-1eb6857502c3"
 authors = ["josePereiro <jose.pereiro.personal@gmail.com> and contributors"]
 version = "1.0.0-DEV"
 
+[deps]
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
+SimpleDirectMediaLayer = "98e33af6-2ee5-5afd-9e75-cbc738b767c4"
+
 [compat]
 julia = "1.10"
 
