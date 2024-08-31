@@ -23,9 +23,24 @@ end
 onevent!() do evt
     # recenter
     if evt.type == SDL_MOUSEBUTTONDOWN
-        w, h = winsize()
-        SIM_STATE["POS"] = mousepos()
-        SIM_STATE["NUM_STEPS"] = INIT_STEPS
+
+        if evt.button.button == SDL_BUTTON_LEFT
+            if get!(SIM_STATE, "RUNNING", true)
+                w, h = winsize()
+                SIM_STATE["POS"] = mousepos()
+            end
+        end
+
+        # pause/play
+        if evt.button.button == SDL_BUTTON_RIGHT
+            SIM_STATE["RUNNING"] = !get!(SIM_STATE, "RUNNING", true)
+        end
+
+        if evt.button.button == SDL_BUTTON_MIDDLE
+            if get!(SIM_STATE, "RUNNING", true)
+                SIM_STATE["NUM_STEPS"] = INIT_STEPS
+            end
+        end
     end
 end
 
@@ -37,13 +52,16 @@ SDL_draw() do
     background!()
 
     # up step (temperature)
+    _running = get!(SIM_STATE, "RUNNING", true)
     _, wheel_d = mousewheel!()
     nsteps = get!(SIM_STATE, "NUM_STEPS", INIT_STEPS)
-    _increment = max(abs(wheel_d) * nsteps, 1)
-    _increment = sign(wheel_d) * ceil(Int, 0.1 * _increment)
-    nsteps = clamp(nsteps + _increment, 0, MAX_STEPS)
-    SIM_STATE["NUM_STEPS"] = nsteps
-    
+    if _running
+        _increment = max(abs(wheel_d) * nsteps, 1)
+        _increment = sign(wheel_d) * ceil(Int, 0.1 * _increment)
+        nsteps = clamp(nsteps + _increment, 0, MAX_STEPS)
+        SIM_STATE["NUM_STEPS"] = nsteps
+    end
+
     # walk
     w, h = winsize()
     points_buff = get!(SIM_STATE, "POINT_BUFF") do 
@@ -56,13 +74,15 @@ SDL_draw() do
     end::Vector{SDL_Point}
         
     x, y = get!(SIM_STATE, "POS", (w, h) .÷ 2)
-    @threads :static for st in 1:nsteps
-        x = clamp(x + rand(-1:1), 1, w)
-        y = clamp(y + rand(-1:1), 1, h)
-        points_buff[st] = SDL_Point(x, y)
+    if _running
+        @threads :static for st in 1:nsteps
+            x = clamp(x + rand(-1:1), 1, w)
+            y = clamp(y + rand(-1:1), 1, h)
+            points_buff[st] = SDL_Point(x, y)
+        end
+        # update pos
+        SIM_STATE["POS"] = (x, y)
     end
-    # update pos
-    SIM_STATE["POS"] = (x, y)
 
     # paint
     drawcolor!(255, 255, 255)
@@ -76,6 +96,7 @@ SDL_draw() do
         @info("Iter $(c)",
             msd_framerate = msd_framerate(),
             nsteps = nsteps,
+            running = _running,
         )
         println()
     end
