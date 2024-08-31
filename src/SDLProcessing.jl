@@ -12,7 +12,8 @@ module SDLProcessing
     include("1.1.SDL.utils.jl")
     include("1.2.SDL.init.jl")
     include("1.3.SDL.draw.jl")
-    include("2.callbacks.jl")
+    include("2.0.callbacks.jl")
+    include("2.1.callbacks.defaults.jl")
     include("3.processing.jl")
     include("exportall.jl")
 

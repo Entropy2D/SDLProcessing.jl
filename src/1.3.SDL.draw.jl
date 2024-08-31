@@ -18,15 +18,9 @@ function SDL_draw(onloop::Function = _do_nothing)
             # event
             while Bool(SDL_PollEvent(SDL_event_ref))
                 evt = SDL_event_ref[]
-
                 for _onevent in ONEVENT_CALLBACKS
-                    _onevent(evt)
-                end
-
-                # default quit
-                if evt.type == SDL_QUIT
-                    SDL_STATE["SDL_RUNNING"] = false
-                    break
+                    ret = _onevent(evt) 
+                    ret === :break && break
                 end
             end
             
