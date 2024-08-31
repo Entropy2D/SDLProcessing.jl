@@ -17,21 +17,21 @@ winsize()::Tuple{Int, Int} = (SDL_STATE["SDL_WIN_W"], SDL_STATE["SDL_WIN_H"])
 # Draw
 
 function drawpoint(x, y)
-    SDL_RenderDrawPoint(SDL_renderer(), x, y)
+    CallSDLFunction(SDL_RenderDrawPoint, SDL_renderer(), x, y)
 end
 
 function drawpoints(points::Vector{SDL_Point}, n = length(points))
-    SDL_RenderDrawPoints(SDL_renderer(), points, n)
+    CallSDLFunction(SDL_RenderDrawPoints, SDL_renderer(), points, n)
 end
 
 function drawcolor!(r, g, b, a = SDL_ALPHA_OPAQUE)
     SDL_STATE["SDL_DRAW_COLOR"] = (r, g, b, a)
-    SDL_SetRenderDrawColor(SDL_renderer(), r, g, b, a);
+    CallSDLFunction(SDL_SetRenderDrawColor, SDL_renderer(), r, g, b, a);
 end
 drawcolor()::Tuple{Int, Int, Int, Int} = get!(SDL_STATE, "SDL_DRAW_COLOR", (0,0,0,0))
 
 function background!()
-    SDL_RenderClear(SDL_renderer())
+    CallSDLFunction(SDL_RenderClear, SDL_renderer())
 end
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .

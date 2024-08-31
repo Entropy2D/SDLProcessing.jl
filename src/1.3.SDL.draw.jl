@@ -16,7 +16,7 @@ function SDL_draw(onloop::Function = _do_nothing)
         while get!(SDL_STATE, "SDL_RUNNING", true)
 
             # event
-            while Bool(SDL_PollEvent(SDL_event_ref))
+            while Bool(CallSDLFunction(SDL_PollEvent, SDL_event_ref))
                 evt = SDL_event_ref[]
                 for _onevent in ONEVENT_CALLBACKS
                     ret = _onevent(evt) 
@@ -57,7 +57,7 @@ function SDL_draw(onloop::Function = _do_nothing)
         end # while running
 
     catch err
-        err isa InterruptException || _show_error_box(err)
+        err isa InterruptException || _showerror(err; showbox = true, showterminal = true)
     finally
         
         SDL_DestroyRenderer(SDL_renderer)
