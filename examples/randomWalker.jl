@@ -21,29 +21,27 @@ onevent!() do evt
     end
 end
 
-
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
-
 SDL_draw() do
 
+    # print some info
     mod(loopcount(), framerate()) == 0 && println(msd_framerate())
-    
-    w, h = winsize()
     
     # erase
     drawcolor!(0,0,0)
     background!()
     
     # walk
+    drawcolor!(255, 255, 255)
+    w, h = winsize()
     x, y = get!(SIM_STATE, "POS", (w, h) .÷ 2)
     for st in 1:300
         x = clamp(x + rand(-1:1), 1, w)
         y = clamp(y + rand(-1:1), 1, h)
-        
         # paint
-        drawcolor!(255, 255, 255)
         drawpoint(x, y)
     end
+    # update pos
     SIM_STATE["POS"] = (x, y)
 
 end
