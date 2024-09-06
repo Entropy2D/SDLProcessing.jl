@@ -1,10 +1,10 @@
 ## ...- -.- .- .- - - -. .. . .. - .-- .
-SDL_window()::Ptr{SDL_win} = SDL_STATE["SDL_WIN"]
-SDL_renderer()::Ptr{SDL_Renderer} = SDL_STATE["SDL_RENDERER"]
+window_ptr()::Ptr{SDL_Window} = SDL_STATE["SDL_WIN"]
+renderer_ptr()::Ptr{SDL_Renderer} = SDL_STATE["SDL_RENDERER"]
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .
-wintitle() = get!(SDL_STATE, "SDL_WIN_TITLE", "SDLProcessing.jl")
-wintitle!(title) = SDL_STATE["SDL_WIN_TITLE"] = title
+wintitle()::String = get!(SDL_STATE, "SDL_WIN_TITLE", "SDLProcessing.jl")
+wintitle!(title::String) = SDL_STATE["SDL_WIN_TITLE"] = title
 
 function winsize!(w::Int, h::Int)
     SDL_STATE["SDL_WIN_W"] = w
@@ -14,37 +14,29 @@ end
 winsize()::Tuple{Int, Int} = (SDL_STATE["SDL_WIN_W"], SDL_STATE["SDL_WIN_H"])
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .
-# Texture
 
-function texsize(tex)
-    w_ref, h_ref = Ref{Cint}(0), Ref{Cint}(0)
-    CallSDLFunction(
-        SDL_QueryTexture, 
-            tex, C_NULL, C_NULL, w_ref, h_ref
-    )
-    return w_ref[], h_ref[]
-end
+
 
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .
 # Draw
 
 function drawpoint(x, y)
-    CallSDLFunction(SDL_RenderDrawPoint, SDL_renderer(), x, y)
+    CallSDLFunction(SDL_RenderDrawPoint, renderer_ptr(), x, y)
 end
 
 function drawpoints(points::Vector{SDL_Point}, n = length(points))
-    CallSDLFunction(SDL_RenderDrawPoints, SDL_renderer(), points, n)
+    CallSDLFunction(SDL_RenderDrawPoints, renderer_ptr(), points, n)
 end
 
 function drawcolor!(r, g, b, a = SDL_ALPHA_OPAQUE)
     SDL_STATE["SDL_DRAW_COLOR"] = (r, g, b, a)
-    CallSDLFunction(SDL_SetRenderDrawColor, SDL_renderer(), r, g, b, a);
+    CallSDLFunction(SDL_SetRenderDrawColor, renderer_ptr(), r, g, b, a);
 end
 drawcolor()::Tuple{Int, Int, Int, Int} = get!(SDL_STATE, "SDL_DRAW_COLOR", (0,0,0,0))
 
 function background!()
-    CallSDLFunction(SDL_RenderClear, SDL_renderer())
+    CallSDLFunction(SDL_RenderClear, renderer_ptr())
 end
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .

@@ -18,24 +18,16 @@ SDL_init() do
     framerate!(60)
 
     # Load/Prepare texture
-    surface_ptr = IMG_Load(joinpath(@__DIR__, "Picture1.png"))
-    if surface_ptr != C_NULL
-        surface = unsafe_load(surface_ptr)
+    path = joinpath(@__DIR__, "Picture1.png")
+    SIM_STATE["TEX"] = loadimage(path) do sur_ptr
+        setcolorkey(sur_ptr, 255, 255, 255)
     end
-    SDL_SetColorKey(surface_ptr, SDL_TRUE, SDL_MapRGB(surface.format, 0xff, 0xff, 0xff))
-    SIM_STATE["TEX"] = SDL_CreateTextureFromSurface(renderer_ptr(), surface_ptr)
-    SDL_FreeSurface(surface_ptr)
     tex_w, tex_h = imagesize(SIM_STATE["TEX"])
     win_w, win_h = winsize()
     SIM_STATE["TEX.SIZE"] = (tex_w, tex_h)
     
     # Particles
     SIM_STATE["PARTICLE.POS"] = Tuple{Int, Int}[]
-
-    # register finilizer
-    onfinally!() do
-        SDL_DestroyTexture(get(SIM_STATE, "TEX", C_NULL))
-    end
 
     # initialize adder
     SIM_STATE["ADD.FLAG"] = false
@@ -47,7 +39,7 @@ end
 onevent!() do evt
     # recenter
     if evt.type == SDL_MOUSEBUTTONDOWN
-
+        
         if evt.button.button == SDL_BUTTON_LEFT
             println("SDL_BUTTON_LEFT")
             SIM_STATE["ADD.FLAG"] = !SIM_STATE["ADD.FLAG"]

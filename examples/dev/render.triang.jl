@@ -94,7 +94,7 @@ end
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
 SDL_draw() do
     
-    renderer = SDL_renderer()
+    renderer = renderer_ptr()
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 

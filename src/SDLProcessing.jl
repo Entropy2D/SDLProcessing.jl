@@ -19,7 +19,8 @@ module SDLProcessing
     include("1.4.stats.jl")
     include("2.0.callbacks.jl")
     include("2.1.callbacks.defaults.jl")
-    include("3.processing.jl")
+    include("3.0.processing.jl")
+    include("3.1.processing.image.jl")
     include("exportall.jl")
 
     @_exportall_non_underscore()

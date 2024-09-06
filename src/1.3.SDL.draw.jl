@@ -4,9 +4,11 @@ function SDL_draw(onloop::Function = _do_nothing)
 
     @info "SDL_draw"
 
-    SDL_win = SDL_STATE["SDL_WIN"]
-    SDL_renderer = SDL_STATE["SDL_RENDERER"]
-    SDL_event_ref = get!(SDL_STATE, "SDL_EVENT_REF", Ref{SDL_Event}())
+    get!(SDL_STATE, "INIT.CALLED.FLAG", false) || error("You must call `SDL_init` first...")
+
+    SDL_win = SDL_STATE["SDL_WIN"]::Ptr{SDL_Window}
+    SDL_renderer = SDL_STATE["SDL_RENDERER"]::Ptr{SDL_Renderer}
+    SDL_event_ref = get!(Ref{SDL_Event}, SDL_STATE, "SDL_EVENT_REF")::Ref{SDL_Event}
     
     SDL_loop_count = 0
     tic = time()

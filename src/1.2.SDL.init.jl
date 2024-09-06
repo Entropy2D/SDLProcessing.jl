@@ -57,6 +57,8 @@ function SDL_init(onsetup::Function = _do_nothing)
 
     @info "SDL_init"
 
+    get!(SDL_STATE, "INIT.CALLED.FLAG", false) && error("Init was already called!")
+
     try
         # load config
         _loadConfig()
@@ -67,6 +69,9 @@ function SDL_init(onsetup::Function = _do_nothing)
 
         # call setup
         onsetup()
+
+        # update flag
+        SDL_STATE["INIT.CALLED.FLAG"] = true
 
     catch err
         _showerror(err; 
