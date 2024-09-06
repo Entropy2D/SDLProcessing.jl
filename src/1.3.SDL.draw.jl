@@ -60,13 +60,16 @@ function SDL_draw(onloop::Function = _do_nothing)
         err isa InterruptException || _showerror(err; showbox = true, showterminal = true)
     finally
         
+        for _onfinally in ONFINALLY_CALLBACKS
+            try; _onfinally();
+                catch err ignored; 
+                _showerror(ignored; showbox = false, showterminal = true)
+            end
+        end
+
         SDL_DestroyRenderer(SDL_renderer)
         SDL_DestroyWindow(SDL_win)
         SDL_Quit()
-
-        for _onfinally in ONFINALLY_CALLBACKS
-            _onfinally();
-        end
     end
 end
 

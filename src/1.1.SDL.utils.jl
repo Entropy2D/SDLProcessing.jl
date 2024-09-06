@@ -1,12 +1,14 @@
 _show_SDL_error() = @error("SDL ERROR:\n", unsafe_string(SDL_GetError()))
 
+
+# TODO: improve backtrace
 function _showerror(jlerr = nothing; 
         showbox = true, 
-        showterminal = true
+        showterminal = true,
+        trace = isnothing(jlerr) ? catch_backtrace() : backtrace()
     )
     
-    _trace = isnothing(jlerr) ? catch_backtrace() : backtrace()
-    _trace_str = sprint(Base.show_backtrace, _trace)
+    _trace_str = sprint(Base.show_backtrace, trace)
     jl_error_str = isnothing(jlerr) ? "" : 
         string("JULIA ERROR:\n", sprint(showerror, jlerr))
     
@@ -65,4 +67,18 @@ function CallSDLFunction(func::Function, args...;
     end
 
     return ret
+end
+
+# TODO: use CircularBuffer for computng the statistics of the last N frames
+function _msd_framerate_tic()
+    _now = time()
+    _tic = get!(SDL_STATE, "MEASSURED.FRAMERATE.TIC", -1.0)
+    if _tic != -1.0
+        get!(SDL_STATE, "MEASSURED.FRAMERATE.ACC", 0.0)
+        get!(SDL_STATE, "MEASSURED.FRAMERATE.COUNTER", 0)
+        SDL_STATE["MEASSURED.FRAMERATE.ACC"] += 1/(_now - _tic)
+        SDL_STATE["MEASSURED.FRAMERATE.COUNTER"] += 1
+    end
+    SDL_STATE["MEASSURED.FRAMERATE.TIC"] = _now
+    nothing
 end

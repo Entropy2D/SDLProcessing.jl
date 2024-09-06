@@ -61,12 +61,12 @@ function SDL_init(onsetup::Function = _do_nothing)
         # load config
         _loadConfig()
 
-        # call setup
-        onsetup()
-
         # init
         _initSDL()
         _initWindowRenderer()
+
+        # call setup
+        onsetup()
 
     catch err
         _showerror(err; 

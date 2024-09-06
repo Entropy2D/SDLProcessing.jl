@@ -25,23 +25,36 @@ onevent!() do evt
     if evt.type == SDL_MOUSEBUTTONDOWN
 
         if evt.button.button == SDL_BUTTON_LEFT
-            if get!(SIM_STATE, "RUNNING", true)
-                w, h = winsize()
-                SIM_STATE["POS"] = mousepos()
-            end
+            get!(SIM_STATE, "RUNNING", true) || return
+            w, h = winsize()
+            SIM_STATE["POS"] = mousepos()
+            return
         end
 
         # pause/play
         if evt.button.button == SDL_BUTTON_RIGHT
             SIM_STATE["RUNNING"] = !get!(SIM_STATE, "RUNNING", true)
+            return
         end
 
         if evt.button.button == SDL_BUTTON_MIDDLE
-            if get!(SIM_STATE, "RUNNING", true)
-                SIM_STATE["NUM_STEPS"] = INIT_STEPS
-            end
+            get!(SIM_STATE, "RUNNING", true) || return
+            SIM_STATE["NUM_STEPS"] = INIT_STEPS
+            return
         end
-    end
+    end # SDL_MOUSEBUTTONDOWN
+
+    # up step ("temperature")
+    if evt.type == SDL_MOUSEWHEEL
+        get!(SIM_STATE, "RUNNING", true) || return
+        nsteps = get!(SIM_STATE, "NUM_STEPS", INIT_STEPS)
+        _, wheel_d = mousewheel(evt)
+        increment = max(abs(wheel_d) * nsteps, 1)
+        increment = sign(wheel_d) * ceil(Int, 0.1 * increment)
+        nsteps = clamp(nsteps + increment, 0, MAX_STEPS)
+        SIM_STATE["NUM_STEPS"] = nsteps
+        return
+    end # SDL_MOUSEWHEEL
 end
 
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
@@ -50,17 +63,6 @@ SDL_draw() do
     # erase
     drawcolor!(0,0,0)
     background!()
-
-    # up step (temperature)
-    _running = get!(SIM_STATE, "RUNNING", true)
-    _, wheel_d = mousewheel!()
-    nsteps = get!(SIM_STATE, "NUM_STEPS", INIT_STEPS)
-    if _running
-        _increment = max(abs(wheel_d) * nsteps, 1)
-        _increment = sign(wheel_d) * ceil(Int, 0.1 * _increment)
-        nsteps = clamp(nsteps + _increment, 0, MAX_STEPS)
-        SIM_STATE["NUM_STEPS"] = nsteps
-    end
 
     # walk
     w, h = winsize()
@@ -72,7 +74,9 @@ SDL_draw() do
         end
         return _vec
     end::Vector{SDL_Point}
-        
+    
+    _running = get!(SIM_STATE, "RUNNING", true)
+    nsteps = get!(SIM_STATE, "NUM_STEPS", INIT_STEPS)
     x, y = get!(SIM_STATE, "POS", (w, h) .÷ 2)
     if _running
         @threads :static for st in 1:nsteps

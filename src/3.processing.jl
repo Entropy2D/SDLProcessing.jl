@@ -14,6 +14,19 @@ end
 winsize()::Tuple{Int, Int} = (SDL_STATE["SDL_WIN_W"], SDL_STATE["SDL_WIN_H"])
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .
+# Texture
+
+function texsize(tex)
+    w_ref, h_ref = Ref{Cint}(0), Ref{Cint}(0)
+    CallSDLFunction(
+        SDL_QueryTexture, 
+            tex, C_NULL, C_NULL, w_ref, h_ref
+    )
+    return w_ref[], h_ref[]
+end
+
+
+## ...- -.- .- .- - - -. .. . .. - .-- .
 # Draw
 
 function drawpoint(x, y)
@@ -36,24 +49,33 @@ end
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .
 # Events
-
-const _MOUNSE_X_POS = Int32[1]
-const _MOUNSE_Y_POS = Int32[1]
-function mousepos()::Tuple{Int, Int} 
-    SDL_GetMouseState(pointer(_MOUNSE_X_POS), pointer(_MOUNSE_Y_POS))
-    return ((_MOUNSE_X_POS[1], _MOUNSE_Y_POS[1]))
+const _MOUNSE_X_POS = Ref{Int32}(0)
+const _MOUNSE_Y_POS = Ref{Int32}(0)
+function mousepos()
+    SDL_GetMouseState(_MOUNSE_X_POS, _MOUNSE_Y_POS)
+    return (_MOUNSE_X_POS[], _MOUNSE_Y_POS[])
 end
 
-
+# TODO: Rethink
 # const _WHEEL_CHANNEL = Channel{Tuple{Int, Int}}(32)
 # This pop! the data of the last WHEEL event
-function mousewheel!()::Tuple{Int, Int} 
-    _zero = (0,0)
-    get!(SDL_STATE, "MOUSE_WHEEL.UPDATE", false) || return _zero
-    _wheel = get!(SDL_STATE, "MOUSE_WHEEL", _zero)
-    SDL_STATE["MOUSE_WHEEL"] = _zero
-    SDL_STATE["MOUSE_WHEEL.UPDATE"] = false
-    return _wheel
+# function mousewheel!()::Tuple{Int, Int} 
+#     get!(SDL_STATE, "MOUSE_WHEEL.UPDATED", false) || return _ZERO_TUPLE
+#     _wheel = get!(SDL_STATE, "MOUSE_WHEEL", _ZERO_TUPLE)
+#     SDL_STATE["MOUSE_WHEEL"] = _ZERO_TUPLE
+#     SDL_STATE["MOUSE_WHEEL.UPDATED"] = false
+#     return _wheel
+# end
+
+function mousewheel(evt)::Tuple{Int, Int}
+    # Derived from: https://github.com/Kyjor/JulGame.jl
+    # wheel_x = sdlVersion >= 2018 ? -event.wheel.preciseX : -(Cfloat(event.wheel.x))
+    # wheel_x = -evt.wheel.preciseX
+    wheel_x = -(Cfloat(evt.wheel.x))
+    # wheel_y = sdlVersion >= 2018 ? event.wheel.preciseY : Cfloat(event.wheel.y)
+    # wheel_y = evt.wheel.preciseY
+    wheel_y = Cfloat(evt.wheel.y)
+    return (wheel_x, wheel_y)
 end
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .
