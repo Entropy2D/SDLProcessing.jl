@@ -1,4 +1,13 @@
-# TODO: Add priority level to callbacks
+# TODO: Add priority levels to callbacks?
+
+const ONCONFIG_CALLBACKS = Function[]
+onconfig!(f::Function) = push!(ONCONFIG_CALLBACKS, f)
+
+const ONSETUP_CALLBACKS = Function[]
+onsetup!(f::Function) = push!(ONSETUP_CALLBACKS, f)
+
+const ONDRAW_CALLBACKS = Function[]
+ondraw!(f::Function) = push!(ONDRAW_CALLBACKS, f)
 
 const ONFINALLY_CALLBACKS = Function[]
 onfinally!(f::Function) = push!(ONFINALLY_CALLBACKS, f)

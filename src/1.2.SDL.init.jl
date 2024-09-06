@@ -64,12 +64,22 @@ function SDL_init(onsetup::Function = _do_nothing)
         # load config
         _loadConfig()
 
+        # registered callbacks
+        for _onconfig in ONCONFIG_CALLBACKS
+            _onconfig()
+        end
+
         # init
         _initSDL()
         _initWindowRenderer()
 
-        # call setup
+        # direct callback
         onsetup()
+
+        # registered callbacks
+        for _onsetup in ONSETUP_CALLBACKS
+            _onsetup()
+        end
 
         # update flag
         SDL_STATE["INIT.CALLED.FLAG"] = true

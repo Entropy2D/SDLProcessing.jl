@@ -26,8 +26,13 @@ function SDL_draw(onloop::Function = _do_nothing)
                 end
             end
             
-            # callback 
+            # direct callback 
             onloop()
+
+            # registered callbacks
+            for _ondraw in ONDRAW_CALLBACKS
+                _ondraw()
+            end
 
             # TODO: Underestand
             get!(SDL_STATE, "SDL_RENDER_PRESENT_ENABLE", true) && 

@@ -25,7 +25,6 @@ SDL_init() do
     end
     
     # Particles
-    # SIM_STATE["PARTICLES.POS"] = Tuple{Int, Int}[]
     SIM_STATE["PARTICLES.POS"] = CircularBuffer{Tuple{Int, Int}}(80_000)
 
     # initialize adder
