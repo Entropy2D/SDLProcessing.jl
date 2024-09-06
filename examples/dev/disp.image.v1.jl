@@ -25,7 +25,7 @@ SDL_init() do
     SDL_SetColorKey(surface_ptr, SDL_TRUE, SDL_MapRGB(surface.format, 0xff, 0xff, 0xff))
     SIM_STATE["TEX"] = SDL_CreateTextureFromSurface(renderer_ptr(), surface_ptr)
     SDL_FreeSurface(surface_ptr)
-    tex_w, tex_h = imagesize(SIM_STATE["TEX"])
+    tex_w, tex_h = texturesize(SIM_STATE["TEX"])
     win_w, win_h = winsize()
     SIM_STATE["TEX.SIZE"] = (tex_w, tex_h)
     
@@ -51,12 +51,15 @@ onevent!() do evt
         if evt.button.button == SDL_BUTTON_LEFT
             println("SDL_BUTTON_LEFT")
             SIM_STATE["ADD.FLAG"] = !SIM_STATE["ADD.FLAG"]
+            return
         end
 
         if evt.button.button == SDL_BUTTON_RIGHT
             println("SDL_BUTTON_RIGHT")
+            SIM_STATE["ADD.FLAG"] && return
             pos_vec = SIM_STATE["PARTICLE.POS"]
             empty!(pos_vec)
+            return 
         end
     end
 end
@@ -77,8 +80,8 @@ t = @spawn while get!(SDL_STATE, "SDL_RUNNING", true)
             for i in 1:N
                 x, y = pos_vec[i]
                 pos_vec[i] = (
-                    clamp(x + rand(-1:1), tex_w_half, win_w_mhalf),
-                    clamp(y + rand(-1:1), tex_h_half, win_h_mhalf)
+                    clamp(x + rand(-1:1), 1, win_w_mhalf),
+                    clamp(y + rand(-1:1), 1, win_h_mhalf)
                 )
             end
         end
@@ -86,7 +89,6 @@ t = @spawn while get!(SDL_STATE, "SDL_RUNNING", true)
         println(err)
     end
 end
-@show t
 
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
 SDL_draw() do
@@ -102,8 +104,10 @@ SDL_draw() do
 
     # check adder
     if SIM_STATE["ADD.FLAG"]
-        x, y = mousepos()
-        push!(pos_vec, (clamp(x, 1, win_w), clamp(y, 1, win_h)))
+        for it in 1:100
+            x, y = mousepos()
+            push!(pos_vec, (clamp(x, 1, win_w), clamp(y, 1, win_h)))
+        end
     end
 
     # draw
