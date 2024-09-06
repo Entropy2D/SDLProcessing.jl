@@ -116,8 +116,6 @@ SDL_draw() do
         x, y = pos_vec[i]
         drawimage(pimg, 
             x - tex_w_half, y - tex_h_half, 5, 5
-            # round(Int, tex_w * 0.1), 
-            # round(Int, tex_h * 0.1), 
         )
     end
 

@@ -39,7 +39,7 @@ function _initWindowRenderer()
     SDL_renderer = CallSDLFunction(
         SDL_CreateRenderer, 
             SDL_win, 
-            get!(SDL_STATE, "SDL_RENDERER.DRIVER_FLAG", -1)
+            get!(SDL_STATE, "SDL_RENDERER.DRIVER_FLAG", -1),
             SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     )
     SDL_STATE["SDL_RENDERER"] = SDL_renderer
@@ -84,7 +84,6 @@ function SDL_init(onsetup::Function = _do_nothing)
         haskey(SDL_STATE, "SDL_RENDERER") && SDL_DestroyRenderer(SDL_STATE["SDL_RENDERER"])
         SDL_Quit()
         exit()
-
     end
     nothing
 end
