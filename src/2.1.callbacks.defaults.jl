@@ -18,9 +18,12 @@ onevent!() do evt
 
         if scan_code == SDL_SCANCODE_I
             # println("SDL_SCANCODE_I")
+            isempty(ONINFO_CALLBACKS) && return
+            println("INFO ",">"^20)
             for oninfo in ONINFO_CALLBACKS
                 oninfo()
             end
+            println("<"^25, "\n")
             return
         end
         return
@@ -35,5 +38,6 @@ onevent!() do evt
 end
 
 oninfo!() do 
-    println("msg: ", "hello world")
+    println("loop.count: ", loopcount())
+    println("msd.fr: ", round(msd_framerate(); sigdigits = 2), " sec")
 end

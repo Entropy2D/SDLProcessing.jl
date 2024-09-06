@@ -54,6 +54,7 @@ end
 
 _onerror(fun, ret) = throw(SDLException("Function call failed, fun: $(nameof(fun)), ret: $(ret)"))
 
+## . --. ..- . -- . - .. ..- - ..- - -.. ... -- ...
 # Derived from: https://github.com/Kyjor/JulGame.jl
 function CallSDLFunction(func::Function, args...; 
         onerror = _onerror
@@ -67,18 +68,4 @@ function CallSDLFunction(func::Function, args...;
     end
 
     return ret
-end
-
-# TODO: use CircularBuffer for computng the statistics of the last N frames
-function _msd_framerate_tic()
-    _now = time()
-    _tic = get!(SDL_STATE, "MEASSURED.FRAMERATE.TIC", -1.0)
-    if _tic != -1.0
-        get!(SDL_STATE, "MEASSURED.FRAMERATE.ACC", 0.0)
-        get!(SDL_STATE, "MEASSURED.FRAMERATE.COUNTER", 0)
-        SDL_STATE["MEASSURED.FRAMERATE.ACC"] += 1/(_now - _tic)
-        SDL_STATE["MEASSURED.FRAMERATE.COUNTER"] += 1
-    end
-    SDL_STATE["MEASSURED.FRAMERATE.TIC"] = _now
-    nothing
 end

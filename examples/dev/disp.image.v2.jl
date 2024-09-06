@@ -26,7 +26,7 @@ SDL_init() do
     
     # Particles
     # SIM_STATE["PARTICLES.POS"] = Tuple{Int, Int}[]
-    SIM_STATE["PARTICLES.POS"] = CircularBuffer{Tuple{Int, Int}}(10_000)
+    SIM_STATE["PARTICLES.POS"] = CircularBuffer{Tuple{Int, Int}}(80_000)
 
     # initialize adder
     SIM_STATE["ADD.FLAG"] = false
@@ -40,13 +40,13 @@ onevent!() do evt
     if evt.type == SDL_MOUSEBUTTONDOWN
         
         if evt.button.button == SDL_BUTTON_LEFT
-            println("SDL_BUTTON_LEFT")
+            # println("SDL_BUTTON_LEFT")
             SIM_STATE["ADD.FLAG"] = !SIM_STATE["ADD.FLAG"]
             return
         end
 
         if evt.button.button == SDL_BUTTON_RIGHT
-            println("SDL_BUTTON_RIGHT")
+            # println("SDL_BUTTON_RIGHT")
             if !SIM_STATE["ADD.FLAG"]
                 pos_vec = SIM_STATE["PARTICLES.POS"]
                 empty!(pos_vec)
@@ -55,8 +55,6 @@ onevent!() do evt
         end
 
         if evt.button.button == SDL_BUTTON_MIDDLE
-            pos_vec = SIM_STATE["PARTICLES.POS"]
-            println("NUM PARTICLES: ", length(pos_vec))
             return
         end
     end
@@ -91,6 +89,12 @@ t = @spawn while get!(SDL_STATE, "SDL_RUNNING", true)
 end
 
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
+oninfo!() do 
+    pos_vec = SIM_STATE["PARTICLES.POS"]
+    println("particles.num: ", length(pos_vec))
+end
+
+## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
 SDL_draw() do
 
     # variables
@@ -115,7 +119,8 @@ SDL_draw() do
     for i in 1:N
         x, y = pos_vec[i]
         drawimage(pimg, 
-            x - tex_w_half, y - tex_h_half, 5, 5
+            x - tex_w_half, y - tex_h_half, 
+            15, 15
         )
     end
 

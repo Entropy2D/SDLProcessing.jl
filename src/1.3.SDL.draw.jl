@@ -33,28 +33,15 @@ function SDL_draw(onloop::Function = _do_nothing)
             get!(SDL_STATE, "SDL_RENDER_PRESENT_ENABLE", true) && 
                 SDL_RenderPresent(SDL_renderer)
 
-            # loop counter
+            # update loop counter
             SDL_loop_count += 1
-            SDL_STATE["SDL_LOOP_COUNT"] = SDL_loop_count
+            SDL_STATE["STATS.LOOP_COUNT"] = SDL_loop_count
             
             # measure framerate
-            _now = time()
-            _msd_framerate = 1/(_now - tic)
-            SDL_STATE["MEASSURED.FRAMERATE"] = _msd_framerate
-            tic = _now
+            _last_framerate = _msd_framerate_tic()
 
-            # TODO: make frame rate interface
-            if get!(SDL_STATE, "SDL_DELAY_ENABLE", true)
-                _target_framerate = get!(SDL_STATE, "SDL_FRAME_RATE", 60)
-                _curr_delay = get!(SDL_STATE, "SDL_LOOP_DELAY", round(Int, 1000 / _target_framerate))
-                _curr_delay += _target_framerate > _msd_framerate ? -1 : 1
-                if _curr_delay > 0 
-                    SDL_STATE["SDL_LOOP_DELAY"] = _curr_delay
-                    SDL_Delay(_curr_delay)
-                else
-                    SDL_STATE["SDL_LOOP_DELAY"] = 0
-                end
-            end
+            # delay
+            _draw_loop_delay(_last_framerate)
             
         end # while running
 
@@ -75,3 +62,33 @@ function SDL_draw(onloop::Function = _do_nothing)
     end
 end
 
+# --.-- -.- .- -. -.-.- -.-.- .-.-
+# Utils
+function _draw_loop_delay(_msd_fr = msd_framerate())
+    if get!(SDL_STATE, "SDL_DELAY_ENABLE", true)
+        _target_fr = get!(SDL_STATE, "SDL_FRAME_RATE", 60)
+        _curr_delay = get!(SDL_STATE, "SDL_LOOP_DELAY", round(Int, 1000 / _target_fr))
+        _curr_delay += _target_fr > _msd_fr ? -1 : 1
+        if _curr_delay > 0 
+            SDL_STATE["SDL_LOOP_DELAY"] = _curr_delay
+            SDL_Delay(_curr_delay)
+        else
+            SDL_STATE["SDL_LOOP_DELAY"] = 0
+        end
+    end
+end
+
+
+const _MSD_FRAMERATE_DUFFER = CircularBuffer{Float64}(5)
+# TODO: use CircularBuffer for computng the statistics of the last N frames
+function _msd_framerate_tic()
+    _now = time()
+    _tic = get!(SDL_STATE, "MEASSURED.FRAMERATE.TIC", -1.0)
+    _msd_framerate = -1.0
+    if _tic != -1.0
+        _msd_framerate = 1/(_now - _tic)
+        push!(_MSD_FRAMERATE_DUFFER, _msd_framerate)
+    end
+    SDL_STATE["MEASSURED.FRAMERATE.TIC"] = _now
+    return _msd_framerate
+end

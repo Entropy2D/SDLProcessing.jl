@@ -6,6 +6,7 @@ module SDLProcessing
 
     using Reexport
     using Base.Threads
+    using DataStructures
     @reexport using SimpleDirectMediaLayer
     @reexport using SimpleDirectMediaLayer.LibSDL2
 

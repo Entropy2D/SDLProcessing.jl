@@ -48,17 +48,7 @@ function mousepos()
     return (_MOUNSE_X_POS[], _MOUNSE_Y_POS[])
 end
 
-# TODO: Rethink
-# const _WHEEL_CHANNEL = Channel{Tuple{Int, Int}}(32)
-# This pop! the data of the last WHEEL event
-# function mousewheel!()::Tuple{Int, Int} 
-#     get!(SDL_STATE, "MOUSE_WHEEL.UPDATED", false) || return _ZERO_TUPLE
-#     _wheel = get!(SDL_STATE, "MOUSE_WHEEL", _ZERO_TUPLE)
-#     SDL_STATE["MOUSE_WHEEL"] = _ZERO_TUPLE
-#     SDL_STATE["MOUSE_WHEEL.UPDATED"] = false
-#     return _wheel
-# end
-
+## ...- -.- .- .- - - -. .. . .. - .-- .
 function mousewheel(evt)::Tuple{Int, Int}
     # Derived from: https://github.com/Kyjor/JulGame.jl
     # wheel_x = sdlVersion >= 2018 ? -event.wheel.preciseX : -(Cfloat(event.wheel.x))
@@ -71,12 +61,16 @@ function mousewheel(evt)::Tuple{Int, Int}
 end
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .
-loopcount()::Int = get!(SDL_STATE, "SDL_LOOP_COUNT", 0)
+loopcount()::Int = get!(SDL_STATE, "STATS.LOOP_COUNT", 0)
 
 function framerate!(fr::Int)
     SDL_STATE["SDL_FRAME_RATE"] = fr
 end
 framerate()::Int = SDL_STATE["SDL_FRAME_RATE"]
 
-msd_framerate() = get!(SDL_STATE, "MEASSURED.FRAMERATE", -1)
+function msd_framerate()
+    n = length(_MSD_FRAMERATE_DUFFER)
+    n == 0 && return -1.0
+    return sum(_MSD_FRAMERATE_DUFFER) / n
+end
 
