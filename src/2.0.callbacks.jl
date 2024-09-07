@@ -18,3 +18,6 @@ onevent!(f::Function) = push!(ONEVENT_CALLBACKS, f)
 const ONINFO_CALLBACKS = Function[]
 oninfo!(f::Function) = push!(ONINFO_CALLBACKS, f)
 
+const UPTHREAD_CALLBACKS = Function[]
+onthread!(f::Function) = push!(UPTHREAD_CALLBACKS, f)
+

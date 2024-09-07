@@ -1,21 +1,27 @@
 # --.-- -.- .- -. -.-.- -.-.- .-.-
 # loop
-function SDL_draw(onloop::Function = _do_nothing)
+function SDL_draw(ondraw::Function = _do_nothing)
 
     @info "SDL_draw"
 
     get!(SDL_STATE, "INIT.CALLED.FLAG", false) || error("You must call `SDL_init` first...")
 
-    SDL_win = SDL_STATE["SDL_WIN"]::Ptr{SDL_Window}
-    SDL_renderer = SDL_STATE["SDL_RENDERER"]::Ptr{SDL_Renderer}
-    SDL_event_ref = get!(Ref{SDL_Event}, SDL_STATE, "SDL_EVENT_REF")::Ref{SDL_Event}
+    SDL_win = window_ptr()
+    SDL_renderer = renderer_ptr()
+    SDL_event_ref = event_ref()
     
     SDL_loop_count = 0
-    tic = time()
     
     # loop
     try
-        while get!(SDL_STATE, "SDL_RUNNING", true)
+        for taskfun in UPTHREAD_CALLBACKS
+            @spawn while isrunning()
+                taskfun()
+            end
+        end
+
+        # draw loop
+        while isrunning()
 
             # event
             while Bool(CallSDLFunction(SDL_PollEvent, SDL_event_ref))
@@ -27,7 +33,7 @@ function SDL_draw(onloop::Function = _do_nothing)
             end
             
             # direct callback 
-            onloop()
+            ondraw()
 
             # registered callbacks
             for _ondraw in ONDRAW_CALLBACKS
@@ -70,16 +76,15 @@ end
 # --.-- -.- .- -. -.-.- -.-.- .-.-
 # Utils
 function _draw_loop_delay(_msd_fr = msd_framerate())
-    if get!(SDL_STATE, "SDL_DELAY_ENABLE", true)
-        _target_fr = get!(SDL_STATE, "SDL_FRAME_RATE", 60)
-        _curr_delay = get!(SDL_STATE, "SDL_LOOP_DELAY", round(Int, 1000 / _target_fr))
-        _curr_delay += _target_fr > _msd_fr ? -1 : 1
-        if _curr_delay > 0 
-            SDL_STATE["SDL_LOOP_DELAY"] = _curr_delay
-            SDL_Delay(_curr_delay)
-        else
-            SDL_STATE["SDL_LOOP_DELAY"] = 0
-        end
+    get!(SDL_STATE, "SDL_DELAY_ENABLE", true) || return
+    _target_fr = get!(SDL_STATE, "SDL_FRAME_RATE", 60)
+    _curr_delay = get!(SDL_STATE, "SDL_LOOP_DELAY", round(Int, 1000 / _target_fr))
+    _curr_delay += _target_fr > _msd_fr ? -1 : 1
+    if _curr_delay > 0 
+        SDL_STATE["SDL_LOOP_DELAY"] = _curr_delay
+        SDL_Delay(_curr_delay)
+    else
+        SDL_STATE["SDL_LOOP_DELAY"] = 0
     end
 end
 

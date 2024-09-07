@@ -1,16 +1,27 @@
 ## ...- -.- .- .- - - -. .. . .. - .-- .
-window_ptr()::Ptr{SDL_Window} = SDL_STATE["SDL_WIN"]
-renderer_ptr()::Ptr{SDL_Renderer} = SDL_STATE["SDL_RENDERER"]
+window_ptr() = SDL_STATE.window_ptr
+renderer_ptr() = SDL_STATE.renderer_ptr
+event_ref() = SDL_STATE.event_ref
+
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .
+
+# TODO: interface this?
+# SDL_SetWindowTitle
+# SDL_GetWindowTitle
 wintitle()::String = get!(SDL_STATE, "SDL_WIN_TITLE", "SDLProcessing.jl")
 wintitle!(title::String) = SDL_STATE["SDL_WIN_TITLE"] = title
+
+# TODO: interface this?
+# SDL_GetWindowSize
+# SDL_GetWindowSize
 
 function winsize!(w::Int, h::Int)
     SDL_STATE["SDL_WIN_W"] = w
     SDL_STATE["SDL_WIN_H"] = h 
     return (w, h)
 end
+
 winsize()::Tuple{Int, Int} = (SDL_STATE["SDL_WIN_W"], SDL_STATE["SDL_WIN_H"])
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .
@@ -35,12 +46,17 @@ function drawcolor!(r, g, b, a = SDL_ALPHA_OPAQUE)
 end
 drawcolor()::Tuple{Int, Int, Int, Int} = get!(SDL_STATE, "SDL_DRAW_COLOR", (0,0,0,0))
 
-function background!()
+function clear!()
     CallSDLFunction(SDL_RenderClear, renderer_ptr())
 end
 
+showCursor(toggle::Bool) = CallSDLFunction(SDL_ShowCursor, Int(toggle));
+
 ## ...- -.- .- .- - - -. .. . .. - .-- .
 # Events
+
+isrunning(dft = true) = get!(SDL_STATE, "SDL_RUNNING", dft)
+
 const _MOUNSE_X_POS = Ref{Int32}(0)
 const _MOUNSE_Y_POS = Ref{Int32}(0)
 function mousepos()

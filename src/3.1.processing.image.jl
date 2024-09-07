@@ -102,7 +102,8 @@ end
 
 # TODO: make vectoried versions for a set of points and 
 
-function imagesize(pimg::PImage)::Tuple{Int, Int}
+import Base.size
+function Base.size(pimg::PImage)::Tuple{Int, Int}
     return pimg["TEX.SIZE"]
 end
 

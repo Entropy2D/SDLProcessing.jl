@@ -56,6 +56,10 @@ _onerror(fun, ret) = throw(SDLException("Function call failed, fun: $(nameof(fun
 
 ## . --. ..- . -- . - .. ..- - ..- - -.. ... -- ...
 # Derived from: https://github.com/Kyjor/JulGame.jl
+
+_iscallerr(ret::Number) = ret < 0
+_iscallerr(ret) = ret == C_NULL
+
 function CallSDLFunction(func::Function, args...; 
         onerror = _onerror
     )
@@ -63,9 +67,7 @@ function CallSDLFunction(func::Function, args...;
 
     # Call SDL function and check for errors
     ret = func(args...)
-    if (isa(ret, Number) && ret < 0) || ret == C_NULL
-        onerror(func, ret)
-    end
+    _iscallerr(ret) && onerror(func, ret)
 
     return ret
 end

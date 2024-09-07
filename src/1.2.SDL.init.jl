@@ -28,13 +28,7 @@ function _initWindowRenderer()
             get!(SDL_STATE, "SDL_WIN_H", 800), 
             SDL_WINDOW_SHOWN
     )
-    SDL_STATE["SDL_WIN"] = SDL_win
-
-    # TODO: Add callback
-    CallSDLFunction(
-        SDL_SetWindowResizable, 
-           SDL_win, SDL_TRUE # TODO: Add this as default
-    )
+    SDL_STATE.window_ptr = SDL_win
     
     SDL_renderer = CallSDLFunction(
         SDL_CreateRenderer, 
@@ -42,12 +36,9 @@ function _initWindowRenderer()
             get!(SDL_STATE, "SDL_RENDERER.DRIVER_FLAG", -1),
             SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     )
-    SDL_STATE["SDL_RENDERER"] = SDL_renderer
+    SDL_STATE.renderer_ptr = SDL_renderer
     
-    CallSDLFunction(
-        SDL_RenderClear, 
-            SDL_renderer,
-    )
+    CallSDLFunction(SDL_RenderClear, SDL_renderer)
 
     nothing
 end
@@ -61,7 +52,7 @@ function SDL_init(onsetup::Function = _do_nothing)
     get!(SDL_STATE, "INIT.CALLED.FLAG", false) && error("Init was already called!")
 
     try
-        # load config
+        # load config (ex: file or ENV)
         _loadConfig()
 
         # registered callbacks
@@ -81,6 +72,7 @@ function SDL_init(onsetup::Function = _do_nothing)
             _onsetup()
         end
 
+        
         # update flag
         SDL_STATE["INIT.CALLED.FLAG"] = true
 
@@ -90,8 +82,8 @@ function SDL_init(onsetup::Function = _do_nothing)
             showterminal = true
         )
 
-        haskey(SDL_STATE, "SDL_WIN") && SDL_DestroyWindow(SDL_STATE["SDL_WIN"])
-        haskey(SDL_STATE, "SDL_RENDERER") && SDL_DestroyRenderer(SDL_STATE["SDL_RENDERER"])
+        SDL_DestroyWindow(window_ptr())
+        SDL_DestroyRenderer(renderer_ptr())
         SDL_Quit()
         exit()
     end

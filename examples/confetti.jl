@@ -15,10 +15,8 @@ SIM_STATE = Dict()
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
 # Pre init config
 onconfig!() do
-    # window stuff
-    winsize!(900, 900)
+    winsize!(1300, 900)
     wintitle!(basename(@__FILE__))
-    SDL_STATE["SDL_DELAY_ENABLE"] = true
     framerate!(35)
 end
 
@@ -26,8 +24,9 @@ end
 SDL_init() do
     
     # Load/Prepare textures
+    NUM_IMAGES = 9
     SIM_STATE["IMGS"] = PImage[]
-    for i in 1:9
+    for i in 1:NUM_IMAGES
         path = joinpath(@__DIR__, "assets", "Picture$i.png")
         pimg = loadimage(path) do _pimg
             setcolorkey(_pimg, 255, 255, 255) # set transparency
