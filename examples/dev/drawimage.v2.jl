@@ -25,7 +25,10 @@ SDL_init() do
     end
     
     # Particles
-    SIM_STATE["PARTICLES.POS"] = CircularBuffer{Tuple{Int, Int}}(80_000)
+    N = 80_000
+    SIM_STATE["PARTICLES.POS"] = CircularBuffer{Tuple{Int, Int}}(N)
+    # DOING: DRAW PARTICLES DEPENDING HOW OLD THEY ARE
+    SIM_STATE["PARTICLES.ADDIME"] = CircularBuffer{Float64}(N)
 
     # initialize adder
     SIM_STATE["ADD.FLAG"] = false
@@ -117,6 +120,7 @@ SDL_draw() do
     background!()
     for i in 1:N
         x, y = pos_vec[i]
+        imagecolor!(pimg, rand(0:255), rand(0:255), rand(0:255))
         drawimage(pimg, 
             x - tex_w_half, y - tex_h_half, 
             15, 15

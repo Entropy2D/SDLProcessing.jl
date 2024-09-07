@@ -94,6 +94,12 @@ function drawimage(pimg::PImage,
     )
 end
 
+function imagecolor!(pimg::PImage, r, g, b)
+    CallSDLFunction(SDL_SetTextureColorMod, 
+        _imgtexptr(pimg), r, g, b
+    )
+end
+
 # TODO: make vectoried versions for a set of points and 
 
 function imagesize(pimg::PImage)::Tuple{Int, Int}
