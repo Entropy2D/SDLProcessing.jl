@@ -32,11 +32,23 @@ end
 # events
 onevent!() do evt
     if evt.type == SDL_MOUSEWHEEL
+        SIM_STATE["MODE.RANDOM"] = false
         _, wheel_d = mousewheel(evt)
         fr = framerate()
         fr = clamp(fr + sign(wheel_d), 5, 60)
         framerate!(fr)
     end # SDL_MOUSEWHEEL
+
+    # print info
+    if evt.type == SDL_KEYDOWN
+
+        scan_code = evt.key.keysym.scancode
+
+        if scan_code == SDL_SCANCODE_R
+            s = get!(SIM_STATE, "MODE.RANDOM", false)
+            SIM_STATE["MODE.RANDOM"] = !s
+        end
+    end # SDL_KEYDOWN
 end 
 
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
@@ -46,6 +58,14 @@ SDL_draw() do
     target_fr_ts = SIM_STATE["FR.TARGET.TS"]::Vector{Float64}
     msd_fr_ts = SIM_STATE["FR.MSD.TS"]::Vector{Float64}
     win_w, win_h = winsize()
+
+    # walkmode
+    _israndommode = get!(SIM_STATE, "MODE.RANDOM", false)
+    if _israndommode
+        fr = framerate()
+        fr = clamp(fr + rand(-1:1), 5, 60)
+        framerate!(fr)
+    end
 
     # record data
     lc = loopcount()
@@ -69,7 +89,8 @@ SDL_draw() do
     # Info
     drawimgtext(
             "INFO:", "\n",
-            "Move the mouse wheel to control the framerate!!!", "\n",
+            "Move the mouse wheel to control the framerate.", "\n",
+            "Press 'R' to activate random mode.", _israndommode ? " [ACTIVATED]" : "", "\n",
             "\t", "loop.count:   ", lc, "\n",
             "\t", "fr.target:    ", target_fr, "\n",
             "\t", "fr.meassured: ", msd_fr,
