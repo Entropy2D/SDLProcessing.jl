@@ -23,6 +23,7 @@ module SDLProcessing
     include("3.0.processing.jl")
     include("3.1.processing.image.jl")
     include("3.2.processing.geometry.jl")
+    include("3.3.processing.imgtext.jl")
     include("exportall.jl")
 
     @_exportall_non_underscore()
