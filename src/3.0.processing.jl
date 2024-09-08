@@ -50,7 +50,9 @@ function drawbackground!()
     CallSDLFunction(SDL_RenderClear, renderer_ptr())
 end
 
-showcursor(toggle::Bool) = CallSDLFunction(SDL_showcursor, Int(toggle));
+showcursor(toggle::Bool) = CallSDLFunction(SDL_ShowCursor, Int(toggle));
+
+
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .
 # Events

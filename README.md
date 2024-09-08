@@ -10,12 +10,21 @@ Our goal is to create a tool similar to [Processing](https://processing.org) but
 
 ## Examples
 
-### randomWalker.v1
+### randomWalker
 
 A particle randomly walking. The particle traces the path traveled during the interframes time. Play with the mouse controls (left, right, and wheel) for interacting with the simulation.
 Close the window to exit.
 
 To test it run this:
 ```batch
-julia --project examples/randomWalker.v1.jl
+julia --project examples/randomWalker.jl
+```
+
+### confetti
+
+Just play with the mouse controls.
+
+To test it run this:
+```batch
+julia --project examples/confetti.jl
 ```
