@@ -40,6 +40,12 @@ function mousepos()
     return (_MOUNSE_X_POS[], _MOUNSE_Y_POS[])
 end
 
+function winpos()
+    x, y  = Ref{Int32}(0), Ref{Int32}(0)
+    SDL_GetWindowPosition(window_ptr(), x, y)
+    return (x[], y[])
+end
+
 ## ...- -.- .- .- - - -. .. . .. - .-- .
 function mousewheel(evt)::Tuple{Int, Int}
     # Derived from: https://github.com/Kyjor/JulGame.jl

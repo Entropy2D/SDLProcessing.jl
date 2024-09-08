@@ -88,7 +88,8 @@ function forceperiod!(delayfun::Function, f::Frequensor, k::String,
     msdperiod = tic!(f, k)
     iszero(msdperiod) && return # ignore
     # mod delay
-    dt = (tperiod - msdperiod) * rate
+    err = tperiod - msdperiod
+    dt = err * rate
     d = delays(f, k)
     d += dt
     d = d > 0 ? d : zero(d)
@@ -116,3 +117,8 @@ function msd_frequency(f::Frequensor, k)
     iszero(per) && return 0.0
     return inv(per)
 end
+
+# --.- - . .-- .-. -. -. -- - -. . .- - - .- .-.--
+# Dir structure
+
+stdassets(args...) = joinpath(pkgdir(SDLProcessing), "assets", args...)

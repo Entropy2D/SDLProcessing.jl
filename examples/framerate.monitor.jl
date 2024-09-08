@@ -24,7 +24,7 @@ SDL_init() do
     SIM_STATE["FR.TARGET.TS"] = fill(h / 2, w)
     SIM_STATE["FR.MSD.TS"] = fill(h / 2, w)
 
-    path = joinpath(@__DIR__, "assets", "circle.noline.fill.png")
+    path = stdassets("circle.noline.fill.png")
     SIM_STATE["MARKER.TALE"] = loadimage(path)
 end
 

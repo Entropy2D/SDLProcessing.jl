@@ -32,7 +32,8 @@ SDL_init() do
     NUM_IMAGES = 9
     SIM_STATE["IMGS"] = PImage[]
     for i in 1:NUM_IMAGES
-        path = joinpath(@__DIR__, "assets", "Picture$i.png")
+        # TODO: create a small assets library/collection
+        path = stdassets("Picture$i.png")
         pimg = loadimage(path) do _pimg
             setcolorkey(_pimg, 255, 255, 255) # set transparency
         end    
