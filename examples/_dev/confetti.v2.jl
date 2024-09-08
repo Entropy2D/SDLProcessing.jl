@@ -9,20 +9,15 @@ end
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
 SIM_STATE = Dict()
 
+# TODO: make image interface...
+# The problem is how much we hide SDL or not
+
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
 # Pre init config
 onconfig!() do
     winsize!(1300, 900)
     wintitle!(basename(@__FILE__))
-    framerate!(60)
-end
-
-## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
-struct Particle
-    pos::Ref{Tuple{Int, Int}}
-    img::PImage
-    time::Float64
-    cmode::Float64
+    framerate!(35)
 end
 
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
@@ -41,9 +36,12 @@ SDL_init() do
     
     # Particles
     N = 5_000
-    SIM_STATE["PARTICLES"] = CircularBuffer{Particle}(N)
-
+    SIM_STATE["PARTICLES.POS"] = CircularBuffer{Tuple{Int, Int}}(N)
+    # DOING: DRAW PARTICLES DEPENDING HOW OLD THEY ARE
+    SIM_STATE["PARTICLES.ADDTIME"] = CircularBuffer{Float64}(N)
+    SIM_STATE["PARTICLES.IMGS"] = CircularBuffer{PImage}(N)
     SIM_STATE["PARTICLES.SIZE"] = 30
+    SIM_STATE["PARTICLES.COLORMODES"] = CircularBuffer{Int}(N)
     SIM_STATE["CURR.COLORMODE"] = 3
 
     # initialize adder
@@ -65,11 +63,13 @@ onevent!() do evt
 
         if evt.button.button == SDL_BUTTON_RIGHT
             # println("SDL_BUTTON_RIGHT")
-            
             SIM_STATE["ADD.FLAG"] && return
-            particles = SIM_STATE["PARTICLES"]
-            empty!(particles)
-            
+            pos_vec = SIM_STATE["PARTICLES.POS"]
+            time_vec = SIM_STATE["PARTICLES.ADDTIME"]
+            cmode_vec = SIM_STATE["PARTICLES.COLORMODES"]
+            empty!(pos_vec)
+            empty!(time_vec)
+            empty!(cmode_vec)
             return
         end
         
@@ -81,7 +81,6 @@ onevent!() do evt
     if evt.type == SDL_MOUSEWHEEL
         if SIM_STATE["ADD.FLAG"] 
             SIM_STATE["ADD.FLAG"] = false
-            showcursor(true)
             return
         end
         _, wheel_d = mousewheel(evt)
@@ -94,50 +93,44 @@ end
 function _update_loop(i0, s)
     try
         # variables
-        particles = SIM_STATE["PARTICLES"]::CircularBuffer{Particle}
-        
+        pos_vec = SIM_STATE["PARTICLES.POS"]::CircularBuffer{Tuple{Int, Int}}
         win_w, win_h = winsize()
         id = string("UP.LOOP.", rand(Int))
         
         # move chunk
         while isrunning()
-            N = length(particles)
-
+            N = length(pos_vec)
+            
             imgsize = SIM_STATE["PARTICLES.SIZE"]::Int
             for i in i0:s:N
-                part = particles[i]
-                x, y = part.pos[]
-                part.pos[] = (
+                x, y = pos_vec[i]
+                pos_vec[i] = (
                     clamp(x + rand(-1:1), 1, win_w - imgsize),
                     clamp(y + rand(-1:1), 1, win_h - imgsize)
                 )
             end
 
             # control framerate
-            tfrec = framerate() ÷ 4
+            tfrec = framerate() * 0.5
             SDL_forcefrec!(id, tfrec)
+
         end
     catch ignored
-        # showerror(stdout, ignored, catch_backtrace())
-        # rethrow(ignored)
+        # println(ignored)
     end
 end
 
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
 # Register threaded tasks
-let
-    T = 2 # set the number of non-drawing tasks (typically T < nthreads())
-    for t in 1:T
-        onthread!() do
-            _update_loop(t, T)
-        end
-    end
+T = 2
+for t in 1:T
+    onthread!(() -> _update_loop(1, 1)) 
 end
 
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
 oninfo!() do 
-    particles = SIM_STATE["PARTICLES"]
-    println("particles.num: ", length(particles))
+    pos_vec = SIM_STATE["PARTICLES.POS"]
+    println("particles.num: ", length(pos_vec))
 end
 
 ## .-- .- .--- .- .--- .- .- .-. -.- .-----.-.-. .----.
@@ -145,48 +138,43 @@ SDL_draw() do
 
     # variables
     pimgs = SIM_STATE["IMGS"]
-    particles = SIM_STATE["PARTICLES"]::CircularBuffer{Particle}
-
     win_w, win_h = winsize()
     renderer = renderer_ptr()
+    pos_vec = SIM_STATE["PARTICLES.POS"] 
+    time_vec = SIM_STATE["PARTICLES.ADDTIME"]
+    img_vec = SIM_STATE["PARTICLES.IMGS"]
+    cmode_vec = SIM_STATE["PARTICLES.COLORMODES"]
+    N = length(pos_vec)
     imgsize = SIM_STATE["PARTICLES.SIZE"]::Int
 
-    # Add Particles
+    # check adder
     currcmode = SIM_STATE["CURR.COLORMODE"]
     if SIM_STATE["ADD.FLAG"]
         x, y = mousepos()
-        for it in 1:1
-            part = Particle(
-                Ref((
-                    clamp(x - imgsize ÷ 2, 1, win_w), 
-                    clamp(y - imgsize ÷ 2, 1, win_h)
-                )), 
-                rand(pimgs), 
-                time(), 
-                currcmode
-            )
-            push!(particles, part)
+        for it in 1:10
+            push!(pos_vec, (
+                clamp(x - imgsize ÷ 2, 1, win_w), 
+                clamp(y - imgsize ÷ 2, 1, win_h)
+            ))
+            push!(time_vec, time())
+            push!(img_vec, rand(pimgs))
+            push!(cmode_vec, currcmode)
         end
     end
-    
-    # draw all
+
+    # draw
     drawbackground!()
-    N = length(particles)
-    N < 1 && return # ignore
-    t0, t1 = extrema(p.time for p in particles)
+    (isempty(time_vec) || isempty(pos_vec)) && return
+    t0, t1 = extrema(time_vec)
     for i in 1:N
-        part = particles[i]
-        x, y = part.pos[]
-        cmode = part.cmode
-        pimg = part.img
-        c = (part.time - t0) / (t1 - t0) * 255
-        c = isfinite(c) ? c : 255
-        c = round(Int, c)
+        x, y = pos_vec[i]
+        pimg = img_vec[i]
+        cmode = cmode_vec[i]
+        c = round(Int, (time_vec[i] - t0) / (t1 - t0) * 255)
         c = clamp(c, 25, 255)
-        if cmode == 1; imagecolor!(pimg, c, 0, 0)
-            elseif cmode == 2; imagecolor!(pimg, 0, c, 0)
-            elseif cmode == 3; imagecolor!(pimg, 0, 0, c)
-        end
+        cmode == 1 && imagecolor!(pimg, c, 0, 0)
+        cmode == 2 && imagecolor!(pimg, 0, c, 0)
+        cmode == 3 && imagecolor!(pimg, 0, 0, c)
         drawimage(pimg, x, y, imgsize, imgsize)
     end
 

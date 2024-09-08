@@ -27,7 +27,12 @@ onevent!() do evt
     end # evt.type
 end
 
+_round(v, d = 4) = round(v; digits = d)
+
 oninfo!() do 
     println("loop.count: ", loopcount())
-    println("msd.fr: ", round(msd_framerate(); sigdigits = 2), " sec")
+    println("target.fr: ", _round(framerate()), " frames/sec")
+    println("msd.fr: ", _round(msd_framerate()), " frames/sec")
+    _delay = delays(SDL_STATE.frequensor, "DRAW.LOOP")
+    println("draw.loop.delay: ", _round(_delay), " secs")
 end

@@ -50,7 +50,7 @@ function SDL_init(onsetup::Function = _do_nothing)
     @info "SDL_init"
 
     get!(SDL_STATE, "INIT.CALLED.FLAG", false) && error("Init was already called!")
-
+    _diderror = false
     try
         # load config (ex: file or ENV)
         _loadConfig()
@@ -77,11 +77,18 @@ function SDL_init(onsetup::Function = _do_nothing)
         SDL_STATE["INIT.CALLED.FLAG"] = true
 
     catch err
-        _showerror(err; 
-            showbox = true, 
-            showterminal = true
-        )
+        # TODO: fix tis so the stacks are better
+        # _showerror(err; 
+        #     showbox = true, 
+        #     showterminal = true
+        # )
 
+        _diderror = true
+        err isa InterruptException || rethrow(err)
+        
+    finally
+        _diderror || return
+        
         SDL_DestroyWindow(window_ptr())
         SDL_DestroyRenderer(renderer_ptr())
         SDL_Quit()

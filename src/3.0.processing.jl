@@ -46,11 +46,11 @@ function drawcolor!(r, g, b, a = SDL_ALPHA_OPAQUE)
 end
 drawcolor()::Tuple{Int, Int, Int, Int} = get!(SDL_STATE, "SDL_DRAW_COLOR", (0,0,0,0))
 
-function clear!()
+function drawbackground!()
     CallSDLFunction(SDL_RenderClear, renderer_ptr())
 end
 
-showCursor(toggle::Bool) = CallSDLFunction(SDL_ShowCursor, Int(toggle));
+showcursor(toggle::Bool) = CallSDLFunction(SDL_showcursor, Int(toggle));
 
 ## ...- -.- .- .- - - -. .. . .. - .-- .
 # Events
@@ -79,14 +79,21 @@ end
 ## ...- -.- .- .- - - -. .. . .. - .-- .
 loopcount()::Int = get!(SDL_STATE, "STATS.LOOP_COUNT", 0)
 
+function SDL_forcefrec!(id::String, tfrec)
+    fsor = SDL_STATE.frequensor
+    forcefrec!(fsor, id, tfrec) do towait # seconds
+        towait = round(Int, towait * 1000)
+        iszero(towait) || SDL_Delay(towait)
+    end
+end
+
 function framerate!(fr::Int)
     SDL_STATE["SDL_FRAME_RATE"] = fr
 end
 framerate()::Int = SDL_STATE["SDL_FRAME_RATE"]
 
 function msd_framerate()
-    n = length(_MSD_FRAMERATE_DUFFER)
-    n == 0 && return -1.0
-    return sum(_MSD_FRAMERATE_DUFFER) / n
+    fsor = SDL_STATE.frequensor
+    return msd_frequency(fsor, "DRAW.LOOP")
 end
 

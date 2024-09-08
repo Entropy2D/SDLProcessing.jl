@@ -111,7 +111,7 @@ SDL_draw() do
     end
 
     # draw
-    clear!()
+    drawbackground!()
     tex_rect_ref = Ref{SDL_Rect}()
     for i in 1:N
         x, y = pos_vec[i]

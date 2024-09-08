@@ -62,7 +62,7 @@ SDL_draw() do
     
     # erase
     drawcolor!(0,0,0)
-    clear!()
+    drawbackground!()
 
     # walk
     w, h = winsize()

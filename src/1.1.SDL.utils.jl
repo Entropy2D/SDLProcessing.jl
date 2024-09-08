@@ -1,6 +1,3 @@
-_show_SDL_error() = @error("SDL ERROR:\n", unsafe_string(SDL_GetError()))
-
-
 # TODO: improve backtrace
 function _showerror(jlerr = nothing; 
         showbox = true, 

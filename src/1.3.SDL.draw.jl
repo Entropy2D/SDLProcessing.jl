@@ -9,6 +9,7 @@ function SDL_draw(ondraw::Function = _do_nothing)
     SDL_win = window_ptr()
     SDL_renderer = renderer_ptr()
     SDL_event_ref = event_ref()
+    fsor = SDL_STATE.frequensor
     
     SDL_loop_count = 0
     
@@ -47,17 +48,17 @@ function SDL_draw(ondraw::Function = _do_nothing)
             # update loop counter
             SDL_loop_count += 1
             SDL_STATE["STATS.LOOP_COUNT"] = SDL_loop_count
-            
-            # measure framerate
-            _last_framerate = _msd_framerate_tic()
 
-            # delay
-            _draw_loop_delay(_last_framerate)
+            # control framerate
+            SDL_forcefrec!("DRAW.LOOP", framerate())
             
         end # while running
 
     catch err
-        err isa InterruptException || _showerror(err; showbox = true, showterminal = true)
+        # TODO: fix tis so the stacks are better
+        # err isa InterruptException || _showerror(err; showbox = true, showterminal = true)
+
+        err isa InterruptException || rethrow(err)
     finally
         
         for _onfinally in ONFINALLY_CALLBACKS
@@ -75,30 +76,37 @@ end
 
 # --.-- -.- .- -. -.-.- -.-.- .-.-
 # Utils
-function _draw_loop_delay(_msd_fr = msd_framerate())
-    get!(SDL_STATE, "SDL_DELAY_ENABLE", true) || return
-    _target_fr = get!(SDL_STATE, "SDL_FRAME_RATE", 60)
-    _curr_delay = get!(SDL_STATE, "SDL_LOOP_DELAY", round(Int, 1000 / _target_fr))
-    _curr_delay += _target_fr > _msd_fr ? -1 : 1
-    if _curr_delay > 0 
-        SDL_STATE["SDL_LOOP_DELAY"] = _curr_delay
-        SDL_Delay(_curr_delay)
-    else
-        SDL_STATE["SDL_LOOP_DELAY"] = 0
-    end
-end
+# function _draw_loop_delay(_msd_fr = msd_framerate())
+#     get!(SDL_STATE, "SDL_DELAY_ENABLE", true) || return
+#     _target_fr = get!(SDL_STATE, "SDL_FRAME_RATE", 60)
+#     _curr_delay = get!(SDL_STATE, "SDL_LOOP_DELAY", round(Int, 1000 / _target_fr))
+#     _curr_delay += _target_fr > _msd_fr ? -1 : 1
+#     if _curr_delay > 0 
+#         SDL_STATE["SDL_LOOP_DELAY"] = _curr_delay
+#         SDL_Delay(_curr_delay)
+#     else
+#         SDL_STATE["SDL_LOOP_DELAY"] = 0
+#     end
+# end
 
+# function _msd_framerate_tic()
+#     _now = time()
+#     _tic = get!(SDL_STATE, "MEASSURED.FRAMERATE.TIC", -1.0)
+#     _msd_framerate = -1.0
+#     if _tic != -1.0
+#         _msd_framerate = 1/(_now - _tic)
+#         push!(_MSD_FRAMERATE_DUFFER, _msd_framerate)
+#     end
+#     SDL_STATE["MEASSURED.FRAMERATE.TIC"] = _now
+#     return _msd_framerate
+# end
 
-const _MSD_FRAMERATE_DUFFER = CircularBuffer{Float64}(5)
-# TODO: use CircularBuffer for computng the statistics of the last N frames
-function _msd_framerate_tic()
-    _now = time()
-    _tic = get!(SDL_STATE, "MEASSURED.FRAMERATE.TIC", -1.0)
-    _msd_framerate = -1.0
-    if _tic != -1.0
-        _msd_framerate = 1/(_now - _tic)
-        push!(_MSD_FRAMERATE_DUFFER, _msd_framerate)
-    end
-    SDL_STATE["MEASSURED.FRAMERATE.TIC"] = _now
-    return _msd_framerate
-end
+# const _MSD_FRAMERATE_DUFFER = CircularBuffer{Float64}(30)
+# function _msd_fr_tic!()
+#     t = SDL_STATE.ticker
+#     return tic!(t, "MSD.FR") do elp
+#         isnan(elp) && return 0.0
+#         push!(_MSD_FRAMERATE_DUFFER, inv(elp))
+#         return elp
+#     end
+# end
