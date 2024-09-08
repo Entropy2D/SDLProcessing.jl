@@ -1,6 +1,11 @@
 # Arial
-const IMG_TEXT_TEMPLATE = joinpath(@__DIR__, "..", "assets", "Arial.neg.png")
-const IMG_TEXT_FONTS = Dict(
+# SDL_STATE["IMG_TEXT_TEMPLATE_PATH"] = joinpath(@__DIR__, "..", "assets", "Arial.neg.png")
+IMG_TEXT_SEP_W = 5
+IMG_TEXT_MAX_LETTER_H = 107
+IMG_TEXT_MAX_LETTER_W = 55
+
+const IMG_TEXT_CMAP = Dict(
+    # x, y, w, h
     '!' => Ref(SDL_Rect(72, 35, 19, 107)),
     '"' => Ref(SDL_Rect(115, 35, 34, 107)),
     '#' => Ref(SDL_Rect(156, 35, 54, 107)),
@@ -96,3 +101,55 @@ const IMG_TEXT_FONTS = Dict(
     '}' => Ref(SDL_Rect(4711, 35, 38, 107)),
     '~' => Ref(SDL_Rect(4754, 35, 49, 107)),
 )
+
+function drawimgtext(str::String, x0, y0, s; mono = true)
+    isempty(str) && return
+    
+    temp = get!(SDL_STATE, "IMG_TEXT_TEMPLATE") do 
+        path = joinpath(@__DIR__, "..", "assets", "Arial.neg.png")
+        loadimage(path) do _pimg
+            setcolorkey(_pimg, 0, 0, 0) # set transparency
+        end
+    end
+
+    scale = s / IMG_TEXT_MAX_LETTER_H
+    sep_w = round(Int, IMG_TEXT_SEP_W * scale)
+    space_w = round(Int, IMG_TEXT_MAX_LETTER_W * scale) 
+    tab_w = 3 * space_w
+    char_h = round(Int, IMG_TEXT_MAX_LETTER_H * scale) 
+    cursor_x = x0
+    cursor_y = y0
+    for c in str
+
+        # special cases
+        if c == ' '
+            cursor_x += space_w + sep_w
+            continue
+        end
+
+        if c == '\t'
+            cursor_x += tab_w + sep_w
+            continue
+        end
+
+        if c == '\n' 
+            cursor_x = x0
+            cursor_y += char_h + sep_w
+            continue
+        end
+
+        # check cmap
+        src_ref = get(IMG_TEXT_CMAP, c, IMG_TEXT_CMAP['?'])
+        src = src_ref[]
+
+        dst_w = round(Int, src.w * scale)
+        dst_h = round(Int, src.h * scale)
+        dst_ref = Ref(SDL_Rect(cursor_x, cursor_y, dst_w, dst_h))
+
+        drawimage(temp, src_ref, dst_ref)
+        cursor_x += mono ? space_w + sep_w : dst_w + sep_w
+    end
+end
+
+drawimgtext(arg, args...; x, y, s, mono = true) =
+    drawimgtext(string(arg, args...), x, y, s; mono)

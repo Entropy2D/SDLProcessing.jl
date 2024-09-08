@@ -36,3 +36,8 @@ oninfo!() do
     _delay = delays(SDL_STATE.frequensor, "DRAW.LOOP")
     println("draw.loop.delay: ", _round(_delay), " secs")
 end
+
+onsetup!() do
+    fsor = SDL_STATE.frequensor
+    ticsbuffer!(fsor, "DRAW.LOOP")
+end

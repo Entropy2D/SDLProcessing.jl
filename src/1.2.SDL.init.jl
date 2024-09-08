@@ -87,12 +87,12 @@ function SDL_init(onsetup::Function = _do_nothing)
         err isa InterruptException || rethrow(err)
         
     finally
+        sleep(1)
         _diderror || return
         
         SDL_DestroyWindow(window_ptr())
         SDL_DestroyRenderer(renderer_ptr())
         SDL_Quit()
-        exit()
     end
     nothing
 end

@@ -106,7 +106,7 @@ function imagecolor!(pimg::PImage, r, g, b)
 end
 function imagealpha!(pimg::PImage, a)
     CallSDLFunction(SDL_SetTextureAlphaMod, 
-        _imgtexptr(pimg), r, g, b
+        _imgtexptr(pimg), a
     )
 end
 
