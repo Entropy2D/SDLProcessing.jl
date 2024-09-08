@@ -148,7 +148,6 @@ SDL_draw() do
     particles = SIM_STATE["PARTICLES"]::CircularBuffer{Particle}
 
     win_w, win_h = winsize()
-    renderer = renderer_ptr()
     imgsize = SIM_STATE["PARTICLES.SIZE"]::Int
 
     # Add Particles

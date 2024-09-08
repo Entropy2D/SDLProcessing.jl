@@ -57,50 +57,58 @@ Returns the texture Pointer pointer
 =#
 _imgtexptr(pimg::PImage)::Ptr{SDL_Texture} = pimg["TEX.PTR"]
 
+function _drawimage(pimg::PImage, src_rect, dst_rect)
+    CallSDLFunction(SDL_RenderCopy, 
+        renderer_ptr(), _imgtexptr(pimg), src_rect, dst_rect
+    )
+end
+function drawimage(pimg::PImage, src_rect::Ref{SDL_Rect}, dst_rect::Ref{SDL_Rect})
+    _drawimage(pimg, src_rect, dst_rect)
+end
+
+function drawimage(pimg::PImage, src_rect::SDL_Rect, dst_rect::SDL_Rect)
+    _drawimage(pimg, Ref(src_rect), Ref(dst_rect))
+end
 
 function drawimage(pimg::PImage, 
         src_x, src_y, src_w, src_h, # source rectangle
         dst_x, dst_y, dst_w, dst_h; # destination rectangle
-        _renderer::Ptr{SDL_Renderer} = renderer_ptr(), 
-        _tex_ptr::Ptr{SDL_Texture} = _imgtexptr(pimg)
     )
-    src_rect_ref = Ref{SDL_Rect}(SDL_Rect(src_x, src_y, src_w, src_h))
-    dst_rect_ref = Ref{SDL_Rect}(SDL_Rect(dst_x, dst_y, dst_w, dst_h))
-    CallSDLFunction(SDL_RenderCopy, 
-        _renderer, _tex_ptr, src_rect_ref, dst_rect_ref
+    drawimage(pimg, 
+        SDL_Rect(src_x, src_y, src_w, src_h), 
+        SDL_Rect(dst_x, dst_y, dst_w, dst_h)
     )
 end
 
 function drawimage(pimg::PImage, 
         dst_x, dst_y, dst_w, dst_h; # destination rectangle
-        _renderer::Ptr{SDL_Renderer} = renderer_ptr(), 
-        _tex_ptr::Ptr{SDL_Texture} = _imgtexptr(pimg)
     )
-    dst_rect_ref = Ref{SDL_Rect}(SDL_Rect(dst_x, dst_y, dst_w, dst_h))
-    CallSDLFunction(SDL_RenderCopy, 
-        _renderer, _tex_ptr, C_NULL, dst_rect_ref
+    _drawimage(pimg, 
+        C_NULL, 
+        Ref(SDL_Rect(dst_x, dst_y, dst_w, dst_h))
     )
 end
 
 function drawimage(pimg::PImage, 
         dst_x, dst_y; # destination rectangle
-        _renderer::Ptr{SDL_Renderer} = renderer_ptr(), 
-        _tex_ptr::Ptr{SDL_Texture} = _imgtexptr(pimg)
     )
-    dst_w, dst_h = imagesize(pimg)
-    dst_rect_ref = Ref{SDL_Rect}(SDL_Rect(dst_x, dst_y, dst_w, dst_h))
-    CallSDLFunction(SDL_RenderCopy, 
-        _renderer, _tex_ptr, C_NULL, dst_rect_ref
-    )
+    dst_w, dst_h = size(pimg)
+    drawimage(pimg, dst_x, dst_y, dst_w, dst_h)
 end
+
+# .. -- .-- . .- -. - .--- .-. - . .... - -.- .- 
+# Image Control
 
 function imagecolor!(pimg::PImage, r, g, b)
     CallSDLFunction(SDL_SetTextureColorMod, 
         _imgtexptr(pimg), r, g, b
     )
 end
-
-# TODO: make vectoried versions for a set of points and 
+function imagealpha!(pimg::PImage, a)
+    CallSDLFunction(SDL_SetTextureAlphaMod, 
+        _imgtexptr(pimg), r, g, b
+    )
+end
 
 import Base.size
 function Base.size(pimg::PImage)::Tuple{Int, Int}

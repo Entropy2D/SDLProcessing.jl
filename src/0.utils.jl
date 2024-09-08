@@ -23,8 +23,9 @@ Base.setindex!(obj::Wrapper, val, k0, ks...) = setindex!(obj.data, val, k0, ks..
 # keep track of the time between tics
 struct Ticker
     buffer::Dict{String, CircularBuffer{Float64}}
+    elapsed::Dict{String, Float64}
     buffsize::Int
-    Ticker(buffsize = 30) = new(Dict(), buffsize)
+    Ticker(buffsize = 30) = new(Dict(), Dict(), buffsize)
 end
 
 _ticker_buffer_cl(buffsize) = () -> CircularBuffer{Float64}(buffsize)
@@ -44,6 +45,21 @@ end
 
 tic!(t::Ticker, k::String) = tic!(identity, t, k)
 
+function tic(t::Ticker, k::String)
+    tics = ticsbuffer(t, k)
+    return isempty(tics) ? 0.0 : last(tics)
+end
+
+function onelapsed!(fun::Function, t::Ticker, k::String, target::Float64)
+    _elp = get!(t.elapsed, k, 0.0)
+    _elp += tic!(t, k)
+    t.elapsed[k] = _elp
+    _elp < target && return nothing 
+    ret = fun(_elp)
+    t.elapsed[k] = 0
+    return ret
+end
+
 
 # --.- - . .-- .-. -. -. -- - -. . .- - - .- .-.--
 # Try to enfore a frequency ;)
@@ -61,6 +77,9 @@ delays!(f, k, d) = setindex!(f.delays, d, k)
 
 ticsbuffer(f::Frequensor, k::String) = ticsbuffer(f.ticker, k)
 ticsbuffer!(f::Frequensor, k::String) = ticsbuffer!(f.ticker, k)
+
+onelapsed!(fun::Function, f::Frequensor, k::String, target::Float64) = 
+        onelapsed!(fun, f.ticker, k, target)
 
 # Delay as much time required for enforcing the given frequency/period
 function forceperiod!(delayfun::Function, f::Frequensor, k::String, 
