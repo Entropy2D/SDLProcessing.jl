@@ -22,8 +22,8 @@ Base.setindex!(obj::Wrapper, val, k0, ks...) = setindex!(obj.data, val, k0, ks..
 # --.- - . .-- .-. -. -. -- - -. . .- - - .- .-.--
 # keep track of the time between tics
 struct Ticker
-    buffer::Dict{String, CircularBuffer{Float64}}
-    elapsed::Dict{String, Float64}
+    buffer::Dict{String, CircularBuffer{Float64}} # stores the time of tics
+    elapsed::Dict{String, Float64}                # 
     buffsize::Int
     Ticker(buffsize = 30) = new(Dict(), Dict(), buffsize)
 end
@@ -33,7 +33,7 @@ _ticker_buffer_cl(buffsize) = () -> CircularBuffer{Float64}(buffsize)
 ticsbuffer(t::Ticker, k::String) = t.buffer[k]
 ticsbuffer!(t::Ticker, k::String) = get!(_ticker_buffer_cl(t.buffsize), t.buffer, k)
 
-
+# returns result of f(_elp)
 function tic!(f::Function, t::Ticker, k::String)
     _now = time()
     _tics = ticsbuffer!(t, k)
@@ -43,6 +43,7 @@ function tic!(f::Function, t::Ticker, k::String)
     return ret
 end
 
+# returns _elp
 tic!(t::Ticker, k::String) = tic!(identity, t, k)
 
 function tic(t::Ticker, k::String)
@@ -51,11 +52,14 @@ function tic(t::Ticker, k::String)
 end
 
 function onelapsed!(fun::Function, t::Ticker, k::String, target::Float64)
+    # up elapsed
     _elp = get!(t.elapsed, k, 0.0)
     _elp += tic!(t, k)
     t.elapsed[k] = _elp
+
     _elp < target && return nothing 
     ret = fun(_elp)
+
     t.elapsed[k] = 0
     return ret
 end
