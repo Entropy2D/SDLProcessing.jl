@@ -21,6 +21,7 @@ mutable struct Ball <: UseLessParticle
     c::Tuple{Int, Int, Int}  # radius
     x_pos::Int               # pos of center
     y_pos::Int               # pos of center
+    intime::Float64          # last interaction time
 end
 
 function _draw!(b::Ball; pimg = SIM_STATE["CIRCLE"])
@@ -52,8 +53,11 @@ SDL_init() do
     WORLD.x1 = round(Int, w * 0.9)
     WORLD.y0 = round(Int, h * 0.1)
     WORLD.y1 = round(Int, h * 0.9)
-    WORLD.gravity = 30.0
+    WORLD.gravity = 50.0
+    # WORLD.repulsion_field = 25.0
     WORLD.time_step = 0.05
+    WORLD.relax_time = 0.1
+    WORLD.damp = 0.9
 
     nothing
 end
@@ -160,7 +164,7 @@ SDL_draw() do
             r = rand(3:10)
             c = tuple(rand(1:255, 3)...)
             v = 10 .* rand([-1, 1], 2)
-            ball = Ball(v..., r, c, x + rand(-3:3), y + rand(-3:3))
+            ball = Ball(v..., r, c, x + rand(-3:3), y + rand(-3:3), 0)
             push!(balls, ball)
         end
         SIM_STATE["ADD.BALL"] = false

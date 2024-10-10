@@ -1,4 +1,5 @@
 # TODO: Add priority levels to callbacks?
+# TODO: Check ObaServers callbacks engine
 
 const ONCONFIG_CALLBACKS = Function[]
 onconfig!(f::Function) = push!(ONCONFIG_CALLBACKS, f)

@@ -77,7 +77,7 @@ function SDL_init(onsetup::Function = _do_nothing)
         SDL_STATE["INIT.CALLED.FLAG"] = true
 
     catch err
-        # TODO: fix tis so the stacks are better
+        # TODO: fix this so the stacks are better
         # _showerror(err; 
         #     showbox = true, 
         #     showterminal = true

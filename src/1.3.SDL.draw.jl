@@ -40,8 +40,7 @@ function SDL_draw(ondraw::Function = _do_nothing)
             for _ondraw in ONDRAW_CALLBACKS
                 _ondraw()
             end
-
-            # TODO: Underestand
+            
             get!(SDL_STATE, "SDL_RENDER_PRESENT_ENABLE", true) && 
                 SDL_RenderPresent(SDL_renderer)
 
@@ -55,7 +54,7 @@ function SDL_draw(ondraw::Function = _do_nothing)
         end # while running
 
     catch err
-        # TODO: fix tis so the stacks are better
+        # TODO: fix this so the stacks are better
         # err isa InterruptException || _showerror(err; showbox = true, showterminal = true)
 
         err isa InterruptException || rethrow(err)
