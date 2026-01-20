@@ -4,13 +4,7 @@ authors = ["josePereiro <jose.pereiro.personal@gmail.com> and contributors"]
 version = "1.0.0-DEV"
 
 [deps]
-About = "69d22d85-9f48-4c46-bbbe-7ad8341ff72a"
-DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-MassExport = "bdad8087-1bf2-41e1-917c-1d9e34c2a82c"
-OeSes = "26b8eaff-2858-4b7e-9b10-7ca5f2fe1227"
-Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 SimpleDirectMediaLayer = "98e33af6-2ee5-5afd-9e75-cbc738b767c4"
-StyledStrings = "f489334b-da3d-4c2e-b8f0-e476e12c162b"
 
 [compat]
 julia = "1.10"

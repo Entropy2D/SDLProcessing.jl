@@ -1,35 +1,29 @@
-# TODO
-
-# - Try to replicate 'all' examples of Processing page. Of course, completing the interface as required.
-
-# - Aknowledge to https://github.com/dalum/Gloria.jl
-
 module SDLProcessing
 
-    import MassExport
-    using Reexport
-    using Reexport
-    using Base.Threads
-    using DataStructures
-    using OeSes
-    @reexport using SimpleDirectMediaLayer
-    @reexport using SimpleDirectMediaLayer.LibSDL2
 
-    #! include .
+    # --- imports ---
+    import SimpleDirectMediaLayer
+    const SDL2 = SimpleDirectMediaLayer.LibSDL2
+    const TTF = SimpleDirectMediaLayer
 
-    #! include Drawing
+    # --- Core files ---
+    include("State.jl")
+    include("Lifecycle.jl")
+    include("Drawing.jl")
+    include("Typography.jl")
 
+    # --- Exports for the user ---
 
-    #! include Base
-    include("Base/0_types.jl")
-    include("Base/SDL.base.jl")
-    include("Base/SDL.texture.base.jl")
-    include("Base/SDL.utils.jl")
-    include("Base/SDLP.callbacks.builtin.jl")
-    include("Base/SDLP.draw.jl")
-    include("Base/SDLP.init.jl")
-    include("Base/SDLP.utils.jl")
+    # State
+    export SKETCH
 
-    MassExport.@exportall_non_underscore()
+    # Lifecycle
+    export onsetup, ondraw, run_sketch, create_window
 
-end
+    # Drawing
+    export background, fill, noFill, stroke, noStroke, ellipse, rect, color
+
+    # Typography
+    export text, textFont, textSize
+
+end # module SDLProcessing

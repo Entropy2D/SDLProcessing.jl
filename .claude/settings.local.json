@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:p5js.org)",
+      "Bash(julia --project=. -e:*)",
+      "Bash(julia:*)"
+    ]
+  }
+}
