@@ -12,7 +12,7 @@
         - our goal is to reach feature parity with it
     - read `https://processing.org/`
     - read `https://p5js.org/reference/`
-- For design notes, see `@notes-index/index.md`.
+- For design notes, see `@notes/index/index.md`.
     - Follow index links to find notes about specific topics.
 - For knowing more about `SimpleDirectMediaLayer.jl`, you can:
     - check `refs/SimpleDirectMediaLayer/src`
@@ -21,5 +21,8 @@
 
 ## Important
 - `import`s are done in the main package file `src/SDLProcessing.jl`.
-- do not export anything, we will use the `const P = SDLProcessing` pattern and qualified names.
+- do not `export` anything, we will use `const P = SDLProcessing` pattern and qualified names.
 - run julia code as `julia --project ...` from the package root folder.
+    - this ensures the correct environment is used.
+- test scripts are `examples/test-script-*.jl`.
+    - see `notes/index/run-performance-tests.md` for instructions on how to run and interpret them.

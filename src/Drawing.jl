@@ -30,6 +30,49 @@ function noStroke()
     SKETCH._use_stroke = false
 end
 
+function strokeWeight(w::Int)
+    SKETCH._stroke_weight = w
+end
+
+function line(x1, y1, x2, y2)
+    if SKETCH._use_stroke
+        c = SKETCH._stroke_color
+        SDL2.SDL_SetRenderDrawColor(SKETCH._renderer, c.r, c.g, c.b, c.a)
+
+        w = SKETCH._stroke_weight
+        if w <= 1
+            SDL2.SDL_RenderDrawLine(SKETCH._renderer, round(Int, x1), round(Int, y1), round(Int, x2), round(Int, y2))
+            return
+        end
+
+        # Implementation for thick lines
+        dx = x2 - x1
+        dy = y2 - y1
+        len = sqrt(dx*dx + dy*dy)
+        if len == 0 # It's a point
+             # For a point, we can draw a small filled rectangle
+            half_w = w / 2.0
+            r = SDL2.SDL_Rect(round(Int, x1 - half_w), round(Int, y1 - half_w), round(Int, w), round(Int, w))
+            SDL2.SDL_RenderFillRect(SKETCH._renderer, Ref(r))
+            return
+        end
+
+        nx = -dy / len
+        ny = dx / len
+
+        start_offset = -floor(Int, (w-1)/2)
+        end_offset = ceil(Int, (w-1)/2)
+
+        for i in start_offset:end_offset
+            offset_x = i * nx
+            offset_y = i * ny
+            SDL2.SDL_RenderDrawLine(SKETCH._renderer, 
+                                   round(Int, x1 + offset_x), round(Int, y1 + offset_y),
+                                   round(Int, x2 + offset_x), round(Int, y2 + offset_y))
+        end
+    end
+end
+
 
 # --- Shape Functions ---
 

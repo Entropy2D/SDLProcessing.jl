@@ -13,6 +13,7 @@ mutable struct SketchState
     width::Int
     height::Int
     frameCount::Int
+    mouseWheelY::Int
 
     # --- Internal library properties (prefixed with _) ---
     _window::Ptr{Nothing}
@@ -24,6 +25,10 @@ mutable struct SketchState
     _fill_color::Color
     _use_stroke::Bool
     _stroke_color::Color
+    _stroke_weight::Int
+
+    # --- Frame rate properties ---
+    _frame_times_ns::CircularBuffer{Float64}
 
     # --- Typography properties ---
     _font::Ptr{Cvoid}
@@ -38,11 +43,18 @@ end
 
 # Default constructor
 function SketchState()
+
+    _frame_times_ns = CircularBuffer{Float64}(100)
+    for _ in 1:capacity(_frame_times_ns)
+        push!(_frame_times_ns, 0.0)
+    end
+
     return SketchState(
-        0, 0, 0, # width, height, frameCount
+        0, 0, 0, 0, # width, height, frameCount, mouseWheelY
         C_NULL, C_NULL, false, # _window, _renderer, _should_quit
         true, Color(255, 255, 255, 255), # _use_fill, _fill_color
-        true, Color(0, 0, 0, 255),  # _use_stroke, _stroke_color
+        true, Color(0, 0, 0, 255), 1, # _use_stroke, _stroke_color, _stroke_weight
+        _frame_times_ns, # _frame_times_ns
         C_NULL, "", 12, Color(0, 0, 0, 255), # _font, _font_path, _font_size, _text_color
         () -> (), () -> ()  # USER_SETUP_FUNC, USER_DRAW_FUNC
     )

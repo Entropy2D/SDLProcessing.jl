@@ -49,44 +49,57 @@ This function starts and runs the sketch.
 It should be the last call in the user's script.
 """
 function run_sketch()
-    # 1. Initialize SDL subsystems.
-    @assert SDL2.SDL_Init(SDL2.SDL_INIT_EVERYTHING) == 0 "error initializing SDL: $(unsafe_string(SDL2.SDL_GetError()))"
-    @assert TTF.TTF_Init() == 0 "error initializing TTF: $(unsafe_string(TTF.TTF_GetError()))"
+    try
+        # 1. Initialize SDL subsystems.
+        @assert SDL2.SDL_Init(SDL2.SDL_INIT_EVERYTHING) == 0 "error initializing SDL: $(unsafe_string(SDL2.SDL_GetError()))"
+        @assert TTF.TTF_Init() == 0 "error initializing TTF: $(unsafe_string(TTF.TTF_GetError()))"
 
-    # 2. Run the user's setup function.
-    SKETCH.USER_SETUP_FUNC()
+        # 2. Run the user's setup function.
+        SKETCH.USER_SETUP_FUNC()
 
-    # 3. Main application loop.
-    event = Ref{SDL2.SDL_Event}()
-    while !SKETCH._should_quit
-        # 3.1. Handle SDL events (e.g., check for window close).
-        while Bool(SDL2.SDL_PollEvent(event))
-            evt = event[]
-            if evt.type == SDL2.SDL_QUIT
-                SKETCH._should_quit = true
-                break
+        # 3. Main application loop.
+        event = Ref{SDL2.SDL_Event}()
+        while !SKETCH._should_quit
+            # 3.1. Handle SDL events (e.g., check for window close).
+            SKETCH.mouseWheelY = 0 # Reset at the start of the frame
+            while Bool(SDL2.SDL_PollEvent(event))
+                evt = event[]
+                if evt.type == SDL2.SDL_QUIT
+                    SKETCH._should_quit = true
+                    break
+                elseif evt.type == SDL2.SDL_MOUSEWHEEL
+                    SKETCH.mouseWheelY = evt.wheel.y
+                end
             end
+
+            # 3.2. Increment frame count and record time.
+            SKETCH.frameCount += 1
+            
+            push!(SKETCH._frame_times_ns, time_ns())
+
+            # 3.3. Call the user's draw function.
+            SKETCH.USER_DRAW_FUNC()
+
+            # 3.4. Present the renderer.
+            SDL2.SDL_RenderPresent(SKETCH._renderer)
+
+            # 3.5. Delay to cap framerate (optional, for later).
+            SDL2.SDL_Delay(16) # Roughly 60 FPS
         end
-
-        # 3.2. Increment frame count.
-        SKETCH.frameCount += 1
-
-        # 3.3. Call the user's draw function.
-        SKETCH.USER_DRAW_FUNC()
-
-        # 3.4. Present the renderer.
-        SDL2.SDL_RenderPresent(SKETCH._renderer)
-
-        # 3.5. Delay to cap framerate (optional, for later).
-        SDL2.SDL_Delay(16) # Roughly 60 FPS
+    catch e
+        if isa(e, InterruptException) 
+            println("Sketch interrupted by user.")
+            exit()
+        end
+        rethrow(e)
+    finally
+        # 4. Cleanup SDL resources and quit.
+        if SKETCH._font != C_NULL
+            TTF.TTF_CloseFont(SKETCH._font)
+        end
+        TTF.TTF_Quit()
+        SDL2.SDL_DestroyRenderer(SKETCH._renderer)
+        SDL2.SDL_DestroyWindow(SKETCH._window)
+        SDL2.SDL_Quit()
     end
-
-    # 4. Cleanup SDL resources and quit.
-    if SKETCH._font != C_NULL
-        TTF.TTF_CloseFont(SKETCH._font)
-    end
-    TTF.TTF_Quit()
-    SDL2.SDL_DestroyRenderer(SKETCH._renderer)
-    SDL2.SDL_DestroyWindow(SKETCH._window)
-    SDL2.SDL_Quit()
 end
