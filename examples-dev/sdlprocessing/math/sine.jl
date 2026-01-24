@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Sine. 
  * 
  * Smoothly scaling size with the sin() function. 

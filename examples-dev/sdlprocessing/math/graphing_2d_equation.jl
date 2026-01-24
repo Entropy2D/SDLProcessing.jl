@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Graphing 2D Equations
  * by Daniel Shiffman. 
  * 

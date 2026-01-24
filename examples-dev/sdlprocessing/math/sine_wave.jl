@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Sine Wave
  * by Daniel Shiffman.  
  * 

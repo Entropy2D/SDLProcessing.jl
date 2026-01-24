@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Alpha Mask. 
  * 
  * Loads a "mask" for an image to specify the transparency 

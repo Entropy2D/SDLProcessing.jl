@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Loop. 
  * 
  * If noLoop() is run in setup(), the code in draw() 

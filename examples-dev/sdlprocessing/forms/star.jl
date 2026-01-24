@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Star
  * 
  * The star() function created for this example is capable of drawing a

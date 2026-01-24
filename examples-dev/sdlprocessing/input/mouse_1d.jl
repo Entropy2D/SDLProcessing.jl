@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Mouse 1D. 
  * 
  * Move the mouse left and right to shift the balance. 

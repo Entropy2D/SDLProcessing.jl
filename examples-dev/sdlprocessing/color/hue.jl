@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Hue. 
  * 
  * Hue is the color reflected from or transmitted through an object 

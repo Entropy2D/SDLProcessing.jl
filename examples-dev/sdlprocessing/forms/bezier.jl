@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Bezier. 
  * 
  * The first two parameters for the bezier() function specify the 

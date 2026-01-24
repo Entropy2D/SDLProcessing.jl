@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Functions. 
  * 
  * The drawTarget() function makes it easy to draw many distinct targets. 

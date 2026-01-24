@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Create Graphics. 
  * 
  * The createGraphics() function creates an object from 

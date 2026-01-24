@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Random Gaussian. 
  * 
  * This sketch draws ellipses with x and y locations tied to a gaussian distribution of random numbers.

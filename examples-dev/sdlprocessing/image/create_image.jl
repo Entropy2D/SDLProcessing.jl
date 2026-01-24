@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Create Image. 
  * 
  * The createImage() function provides a fresh buffer of pixels to play with.

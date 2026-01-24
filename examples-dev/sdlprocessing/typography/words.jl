@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Words. 
  * 
  * The text() function is used for writing words to the screen.

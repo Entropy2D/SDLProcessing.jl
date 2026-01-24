@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Arm. 
  * 
  * The angle of each segment is controlled with the mouseX and

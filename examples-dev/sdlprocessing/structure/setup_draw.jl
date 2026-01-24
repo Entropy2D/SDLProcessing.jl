@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Setup and Draw. 
  * 
  * The code inside the draw() function runs continuously

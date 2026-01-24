@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Load and Display 
  * 
  * Images can be loaded and displayed to the screen at their actual size

@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Move Eye. 
  * by Simon Greenwold.
  * 

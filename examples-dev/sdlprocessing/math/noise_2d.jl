@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Noise2D 
  * by Daniel Shiffman.  
  * 

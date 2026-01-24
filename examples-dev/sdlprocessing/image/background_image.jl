@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Background Image. 
  * 
  * This example presents the fastest way to load a background image

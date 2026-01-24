@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Brightness 
  * by Rusty Robison. 
  * 

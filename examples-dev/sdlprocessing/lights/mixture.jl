@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Mixture
  * by Simon Greenwold. 
  * 

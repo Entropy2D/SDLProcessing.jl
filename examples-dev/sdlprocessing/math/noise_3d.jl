@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Noise3D. 
  * 
  * Using 3D noise to create simple animated texture. 

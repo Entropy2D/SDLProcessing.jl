@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * On/Off.  
  * 
  * Uses the default lights to show a simple box. The lights() function

@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Mouse Signals 
  * 
  * Move and click the mouse to generate signals. 

@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Saturation. 
  * 
  * Saturation is the strength or purity of the color and represents the 

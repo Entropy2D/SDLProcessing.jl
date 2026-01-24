@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Distance 1D. 
  * 
  * Move the mouse left and right to control the 

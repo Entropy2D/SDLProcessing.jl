@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * No Loop. 
  * 
  * The noLoop() function causes draw() to only run once. 

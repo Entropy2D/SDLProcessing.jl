@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Recursion. 
  * 
  * A demonstration of recursion, which means functions call themselves. 

@@ -34,6 +34,9 @@ function create_window(w::Int, h::Int; title="SDLProcessing Sketch")
     ren = SDL2.SDL_CreateRenderer(win, -1, SDL2.SDL_RENDERER_ACCELERATED | SDL2.SDL_RENDERER_PRESENTVSYNC)
     @assert ren != C_NULL "Failed to create renderer: $(unsafe_string(SDL2.SDL_GetError()))"
 
+    # Enable alpha blending
+    SDL2.SDL_SetRenderDrawBlendMode(ren, SDL2.SDL_BLENDMODE_BLEND)
+
     # After creation, update the SKETCH
     SKETCH.width = w
     SKETCH.height = h

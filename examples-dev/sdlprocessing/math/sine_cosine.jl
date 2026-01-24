@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Sine Cosine. 
  * 
  * Linear movement with sin() and cos(). 

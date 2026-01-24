@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Double Random 
  * by Ira Greenberg.  
  * 

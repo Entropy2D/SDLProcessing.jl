@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Random. 
  * 
  * Random numbers create the basis of this image. 

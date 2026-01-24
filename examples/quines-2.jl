@@ -86,7 +86,7 @@ P.ondraw() do
         P.stroke(P.color(80, 80, 80, alpha))
         P.line(trace[1][1], trace[1][2], trace[2][1], trace[2][2])
         if interaction_age[idx] > 0
-            interaction_age[idx] -= 5
+            interaction_age[idx] -= 1
         end
     end
     P.noStroke() # Reset stroke

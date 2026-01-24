@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Spot. 
  * 
  * Move the mouse the change the position and concentation

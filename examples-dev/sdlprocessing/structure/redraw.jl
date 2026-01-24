@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Redraw. 
  * 
  * The redraw() function makes draw() execute once.  

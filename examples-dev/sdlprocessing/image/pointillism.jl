@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Pointillism
  * by Daniel Shiffman. 
  * 

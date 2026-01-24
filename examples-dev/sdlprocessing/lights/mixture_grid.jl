@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Mixture Grid  
  * modified from an example by Simon Greenwold. 
  * 

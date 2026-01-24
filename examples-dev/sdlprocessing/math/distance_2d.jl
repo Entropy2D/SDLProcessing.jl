@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Distance 2D. 
  * 
  * Move the mouse across the image to obscure and reveal the matrix.  

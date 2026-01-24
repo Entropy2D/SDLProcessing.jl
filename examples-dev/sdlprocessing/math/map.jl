@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Map.
  * 
  * Use the map() function to take any number and scale it to a new number 

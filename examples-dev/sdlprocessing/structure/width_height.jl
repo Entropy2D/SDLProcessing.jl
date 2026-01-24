@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Width and Height. 
  * 
  * The 'width' and 'height' variables contain the width and height 

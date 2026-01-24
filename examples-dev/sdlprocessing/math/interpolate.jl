@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Linear Interpolation. 
  * 
  * Move the mouse across the screen and the symbol will follow.  

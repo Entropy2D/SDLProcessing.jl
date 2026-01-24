@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Clock. 
  * 
  * The current time can be read with the second(), minute(), 

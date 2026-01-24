@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Noise Wave
  * by Daniel Shiffman.  
  * 

@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Transparency. 
  * 
  * Move the pointer left and right across the image to change

@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Shape Vertices. 
  * 
  * How to iterate over the vertices of a shape.

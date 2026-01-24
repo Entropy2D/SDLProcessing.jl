@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Radial Gradient. 
  * 
  * Draws a series of concentric circles to create a gradient 

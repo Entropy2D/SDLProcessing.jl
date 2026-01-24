@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Additive Wave
  * by Daniel Shiffman. 
  * 

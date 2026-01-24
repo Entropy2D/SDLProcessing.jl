@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Scale Shape.  
  * Illustration by George Brower. 
  * 

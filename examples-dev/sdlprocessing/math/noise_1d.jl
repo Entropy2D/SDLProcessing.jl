@@ -1,4 +1,7 @@
 #=
+
+* p5js EXAMPLE CODE
+
  * Noise1D. 
  * 
  * Using 1D Perlin Noise to assign location. 
