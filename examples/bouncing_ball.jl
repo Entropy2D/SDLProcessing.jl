@@ -28,7 +28,7 @@ P.onsetup() do
     ball.vx = (rand() - 0.5) * 10
     ball.vy = (rand() - 0.5) * 10
 
-    P.textFont(joinpath(@__DIR__, "..", "assets", "Open_Sans", "OpenSans-VariableFont_wdth,wght.ttf"), 24)
+    P.textFont(P.asset_path("Open_Sans", "OpenSans-VariableFont_wdth,wght.ttf"), 24)
     P.stroke(P.color(255, 255, 255))
     P.fill(P.color(255, 0, 100))
 end

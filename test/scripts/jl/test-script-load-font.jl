@@ -10,7 +10,7 @@ const SDL2 = SimpleDirectMediaLayer.LibSDL2
 P.onsetup() do
     P.create_window(800, 600; title="Random Walkers")
     # do nothing
-    P.textFont(joinpath(@__DIR__, "..", "assets", "Open_Sans", "OpenSans-VariableFont_wdth,wght.ttf"), 24)
+    P.textFont(P.asset_path("Open_Sans", "OpenSans-VariableFont_wdth,wght.ttf"), 24)
 end
 
 P.ondraw() do

@@ -58,7 +58,7 @@ P.onsetup() do
     global hist_x = zeros(Int, P.SKETCH.width)
     global hist_y = zeros(Int, P.SKETCH.height)
 
-    P.textFont(joinpath(@__DIR__, "..", "assets", "Open_Sans", "OpenSans-VariableFont_wdth,wght.ttf"), 24)
+    P.textFont(P.asset_path("Open_Sans", "OpenSans-VariableFont_wdth,wght.ttf"), 24)
 end
 
 P.ondraw() do

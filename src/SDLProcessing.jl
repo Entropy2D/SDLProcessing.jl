@@ -7,6 +7,7 @@ module SDLProcessing
     const TTF = SimpleDirectMediaLayer
     using Statistics: mean, std
     using DataStructures
+    import Pkg
 
 
     # --- Core files ---
@@ -15,5 +16,6 @@ module SDLProcessing
     include("Drawing.jl")
     include("Typography.jl")
     include("Statistics.jl")
+    include("utils.jl")
 
 end # module SDLProcessing
