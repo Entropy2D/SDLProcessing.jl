@@ -81,6 +81,14 @@ function line(x1, y1, x2, y2)
     end
 end
 
+function point(x, y)
+    if SKETCH._use_stroke
+        c = SKETCH._stroke_color
+        _set_render_color_if_changed(c)
+        SDL2.SDL_RenderDrawPoint(SKETCH._renderer, round(Int, x), round(Int, y))
+    end
+end
+
 
 # --- Shape Functions ---
 
