@@ -24,5 +24,5 @@
 - do not `export` anything, we will use `const P = SDLProcessing` pattern and qualified names.
 - run julia code as `julia --project ...` from the package root folder.
     - this ensures the correct environment is used.
-- test scripts are `examples/test-script-*.jl`.
+- test scripts are `test/scripts/jl/test-script-*.jl`.
     - see `notes/index/run-performance-tests.md` for instructions on how to run and interpret them.

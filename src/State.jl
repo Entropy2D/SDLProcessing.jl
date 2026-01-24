@@ -26,6 +26,8 @@ mutable struct SketchState
     _use_stroke::Bool
     _stroke_color::Color
     _stroke_weight::Int
+    _current_render_color::Color  # Cache to avoid redundant SDL_SetRenderDrawColor calls
+    _temp_rect::Base.RefValue{SDL2.SDL_Rect}  # Pre-allocated rect to avoid allocations in hot loops
 
     # --- Frame rate properties ---
     _frame_times_ns::CircularBuffer{Float64}
@@ -54,6 +56,8 @@ function SketchState()
         C_NULL, C_NULL, false, # _window, _renderer, _should_quit
         true, Color(255, 255, 255, 255), # _use_fill, _fill_color
         true, Color(0, 0, 0, 255), 1, # _use_stroke, _stroke_color, _stroke_weight
+        Color(0, 0, 0, 0), # _current_render_color (invalid initial state to force first update)
+        Ref(SDL2.SDL_Rect(0, 0, 0, 0)), # _temp_rect (pre-allocated for performance)
         _frame_times_ns, # _frame_times_ns
         C_NULL, "", 12, Color(0, 0, 0, 255), # _font, _font_path, _font_size, _text_color
         () -> (), () -> ()  # USER_SETUP_FUNC, USER_DRAW_FUNC
