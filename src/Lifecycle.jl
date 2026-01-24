@@ -20,6 +20,35 @@ function ondraw(f::Function)
     SKETCH.USER_DRAW_FUNC = f
 end
 
+"""
+    noLoop()
+
+Stops SDLProcessing from continuously executing the code within draw().
+"""
+function noLoop()
+    SKETCH._do_loop = false
+end
+
+"""
+    loop()
+
+Restarts SDLProcessing's continuous execution of the code within draw().
+"""
+function loop()
+    SKETCH._do_loop = true
+end
+
+"""
+    onEvent(f::Function)
+
+Register a function to be called for every SDL event.
+Use with `do` block syntax. The function will receive an `SDL_Event` object.
+"""
+function onEvent(f::Function)
+    SKETCH.USER_EVENT_HANDLER_FUNC = f
+end
+
+
 
 """
     create_window(w::Int, h::Int; title="SDLProcessing Sketch")
@@ -73,15 +102,18 @@ function run_sketch()
                 elseif evt.type == SDL2.SDL_MOUSEWHEEL
                     SKETCH.mouseWheelY = evt.wheel.y
                 end
+                SKETCH.USER_EVENT_HANDLER_FUNC(evt)
             end
 
-            # 3.2. Increment frame count and record time.
-            SKETCH.frameCount += 1
-            
-            push!(SKETCH._frame_times_ns, time_ns())
+            if SKETCH._do_loop
+                # 3.2. Increment frame count and record time.
+                SKETCH.frameCount += 1
+                
+                push!(SKETCH._frame_times_ns, time_ns())
 
-            # 3.3. Call the user's draw function.
-            SKETCH.USER_DRAW_FUNC()
+                # 3.3. Call the user's draw function.
+                SKETCH.USER_DRAW_FUNC()
+            end
 
             # 3.4. Present the renderer.
             SDL2.SDL_RenderPresent(SKETCH._renderer)

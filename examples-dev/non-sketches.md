@@ -1,9 +1,0 @@
-examples-dev/sdlprocessing/forms/shape_primitives.jl
-examples-dev/sdlprocessing/forms/primitives_3d.jl
-examples-dev/sdlprocessing/forms/points_lines.jl
-examples-dev/sdlprocessing/input/mouse_functions.jl
-examples-dev/sdlprocessing/input/mouse_press.jl
-examples-dev/sdlprocessing/color/color_variables.jl
-examples-dev/sdlprocessing/math/operator_precedence.jl
-examples-dev/sdlprocessing/structure/coordinates.jl
-examples-dev/sdlprocessing/transform/rotate_push_pop.jl

@@ -8,6 +8,9 @@ struct Color
     a::UInt8
 end
 
+@enum TextAlignHoriz H_LEFT H_CENTER H_RIGHT
+@enum TextAlignVert V_TOP V_BOTTOM V_CENTER V_BASELINE
+
 mutable struct SketchState
     # --- Public, read-only properties for the user ---
     width::Int
@@ -19,6 +22,7 @@ mutable struct SketchState
     _window::Ptr{Nothing}
     _renderer::Ptr{Nothing}
     _should_quit::Bool
+    _do_loop::Bool
 
     # --- Internal style properties ---
     _use_fill::Bool
@@ -37,10 +41,13 @@ mutable struct SketchState
     _font_path::String
     _font_size::Int
     _text_color::Color
+    _text_align_horiz::TextAlignHoriz
+    _text_align_vert::TextAlignVert
 
     # --- User-defined function hooks ---
     USER_SETUP_FUNC::Function
-    USER_DRAW_FUNC::Function 
+    USER_DRAW_FUNC::Function
+    USER_EVENT_HANDLER_FUNC::Function
 end
 
 # Default constructor
@@ -53,14 +60,15 @@ function SketchState()
 
     return SketchState(
         0, 0, 0, 0, # width, height, frameCount, mouseWheelY
-        C_NULL, C_NULL, false, # _window, _renderer, _should_quit
+        C_NULL, C_NULL, false, true, # _window, _renderer, _should_quit, _do_loop
         true, Color(255, 255, 255, 255), # _use_fill, _fill_color
         true, Color(0, 0, 0, 255), 1, # _use_stroke, _stroke_color, _stroke_weight
         Color(0, 0, 0, 0), # _current_render_color (invalid initial state to force first update)
         Ref(SDL2.SDL_Rect(0, 0, 0, 0)), # _temp_rect (pre-allocated for performance)
         _frame_times_ns, # _frame_times_ns
         C_NULL, "", 12, Color(0, 0, 0, 255), # _font, _font_path, _font_size, _text_color
-        () -> (), () -> ()  # USER_SETUP_FUNC, USER_DRAW_FUNC
+        H_LEFT, V_BOTTOM, # _text_align_horiz, _text_align_vert
+        () -> (), () -> (), (evt) -> ()  # USER_SETUP_FUNC, USER_DRAW_FUNC, USER_EVENT_HANDLER_FUNC
     )
 end
 

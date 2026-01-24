@@ -54,10 +54,31 @@ function text(str::String, x::Real, y::Real)
     h = Ref{Cint}()
     TTF.TTF_SizeText(SKETCH._font, str, w, h)
     
-    dest_rect = SDL2.SDL_Rect(round(Int, x), round(Int, y), w[], h[])
+    # Adjust x and y based on alignment
+    new_x = Float64(x)
+    new_y = Float64(y)
+
+    if SKETCH._text_align_horiz == H_CENTER
+        new_x = x - w[] / 2
+    elseif SKETCH._text_align_horiz == H_RIGHT
+        new_x = x - w[]
+    end
+
+    if SKETCH._text_align_vert == V_CENTER
+        new_y = y - h[] / 2
+    elseif SKETCH._text_align_vert == V_BOTTOM
+        new_y = y - h[]
+    end
+    
+    dest_rect = SDL2.SDL_Rect(round(Int, new_x), round(Int, new_y), w[], h[])
 
     SDL2.SDL_RenderCopy(SKETCH._renderer, texture, C_NULL, Ref(dest_rect))
 
     SDL2.SDL_FreeSurface(surface)
     SDL2.SDL_DestroyTexture(texture)
+end
+
+function textAlign(horiz::TextAlignHoriz, vert::TextAlignVert=V_BOTTOM)
+    SKETCH._text_align_horiz = horiz
+    SKETCH._text_align_vert = vert
 end
