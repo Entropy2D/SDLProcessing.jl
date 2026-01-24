@@ -13,6 +13,10 @@ function color(r, g, b, a=255)
     return Color(UInt8(r), UInt8(g), UInt8(b), UInt8(a))
 end
 
+function color(gray::Number, a::Number=255)
+    return Color(UInt8(gray), UInt8(gray), UInt8(gray), UInt8(a))
+end
+
 # --- Style Functions ---
 @inline function background(c::Color)
     # Sets the SDL draw color to c and clears the renderer

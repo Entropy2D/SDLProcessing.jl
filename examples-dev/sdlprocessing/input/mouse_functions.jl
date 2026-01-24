@@ -1,3 +1,7 @@
+#=
+    * DO NOT DELETE 
+    * p5js EXAMPLE CODE
+
 /**
  * Mouse Functions. 
  * 
@@ -62,3 +66,6 @@ void mouseDragged() {
 void mouseReleased() {
   locked = false;
 }
+=#
+
+# TODO/ implement with SDLProcessing.jl 
