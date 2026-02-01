@@ -225,11 +225,11 @@ P.ondraw() do
 
     # --- Display Agent Counts ---
     P.fill(P.color(190, 190, 190)) # Gray text
-    P.text("frameRate: $(round(Int, P.frameRate()))", 10, 10)
-    P.text("walkers: $(length(walkers))", 10, 40)
-    P.text("quines: $(length(quines))", 10, 70)
-    P.text("god power: $(good_power)", 10, 100)
-    P.text("temperature: $(temperature)", 10, 130)
+    P.text("frameRate: $(round(Int, P.frameRate()))", 10, 40)
+    P.text("walkers: $(length(walkers))", 10, 70)
+    P.text("quines: $(length(quines))", 10, 100)
+    P.text("god power: $(good_power)", 10, 130)
+    P.text("temperature: $(temperature)", 10, 160)
 end
 
 ## --- Run the Sketch ---
